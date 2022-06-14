@@ -1,9 +1,9 @@
 import {Injectable} from '@nestjs/common';
 
-import {CreateUserLoginDTO} from "./dto/create-user-login.DTO";
+import {UserDto} from "./dto/user.dto";
 
 @Injectable()
-export class UserLoginService {
+export class UserService {
     private authUsers = [];
 
     getAll() {
@@ -14,7 +14,7 @@ export class UserLoginService {
         return this.authUsers.find(u => u.id === id);
     }
 
-    createAuthUser(createAuthUserDTO: CreateUserLoginDTO) {
+    createAuthUser(createAuthUserDTO: UserDto) {
         this.authUsers.push({
             ...createAuthUserDTO,
             id: Date.now().toString()

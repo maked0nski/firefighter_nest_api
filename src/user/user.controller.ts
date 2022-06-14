@@ -1,12 +1,12 @@
 import {Body, Controller, Delete, Get, HttpCode, HttpStatus, Param, Post} from '@nestjs/common';
 
-import {CreateUserLoginDTO} from "./dto/create-user-login.DTO";
-import {UserLoginService} from "./user-login.service";
+import {UserDto} from "./dto/user.dto";
+import {UserService} from "./user.service";
 
 @Controller('user-login')
-export class UserLoginController {
+export class UserController {
 
-    constructor(private readonly authUserService: UserLoginService) {
+    constructor(private readonly authUserService: UserService) {
     }
 
     @HttpCode(HttpStatus.OK)
@@ -24,13 +24,13 @@ export class UserLoginController {
 
     @HttpCode(HttpStatus.CREATED)
     @Post()
-    save(@Body() createAuthUserDTO: CreateUserLoginDTO) {
+    save(@Body() createAuthUserDTO: UserDto) {
         return this.authUserService.createAuthUser(createAuthUserDTO);
     }
 
     @HttpCode(HttpStatus.CREATED)
     @Post('/:id')
-    update(@Param('id') id: string, @Body() createAuthUserDTO: CreateUserLoginDTO) {
+    update(@Param('id') id: string, @Body() createAuthUserDTO: UserDto) {
         return createAuthUserDTO;
     }
 

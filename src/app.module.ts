@@ -1,14 +1,17 @@
 import { Module } from '@nestjs/common';
 import {ConfigModule} from "@nestjs/config";
 
-import { UserLoginModule } from './user-login/user-login.module';
+import { UserModule } from './user/user.module';
+import { ProfileModule } from './profile/profile.module';
 
 @Module({
   imports: [
       ConfigModule.forRoot({
           envFilePath: `.${process.env.NONE_ENV}.env`
       }),
-      UserLoginModule
+      UserModule,
+      ProfileModule,
+
   ],
   providers: [],
 })
