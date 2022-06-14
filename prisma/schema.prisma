@@ -17,7 +17,7 @@ model Account {
     userId                   String
     refresh_token            String? @db.VarChar(500)
     access_token             String? @db.VarChar(500)
-    user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+    user                        User @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 model User {
     id            String    @id @default(cuid())
