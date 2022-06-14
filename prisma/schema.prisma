@@ -10,14 +10,61 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+model Account {
+    id                       String   @id @default(cuid())
+    createdAt                DateTime @default(now())
+    updatedAt                DateTime @updatedAt
+    userId                   String
+    refresh_token            String? @db.VarChar(500)
+    access_token             String? @db.VarChar(500)
+    user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
 model User {
-  id    Int      @id @default(autoincrement())
-  email String  @unique
-  password  String
-  role Role @default(USER)
-profile Profile
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @default(now()) @updatedAt
+    id            String    @id @default(cuid())
+    createdAt     DateTime  @default(now())
+    updatedAt     DateTime  @updatedAt
+    email         String?   @unique
+    password      String?
+    user_info     UserInfo
+    image         String?   @default("https://www.gravatar.com/avatar/00000000000000000000000000000000?d=mp&f=y")
+    role          Role   @default(USER)
+    position_id     Position
+    car_id          Car
+    fuel_card       Fuel_card
+    accounts      Account
+}
+model UserInfo {
+    id          String  @id @default(cuid())
+    surename    String
+    name    String
+    fathersname    String
+    phone    String @unique
+}
+model Position {
+    id          String  @id @default(cuid())
+    position        String
+}
+model Car {
+    id          String  @id @default(cuid())
+    vin        String
+    model   String
+    fuel    String
+    year String
+    passport_car    String
+    oddometr Int
+    insurance DateTime
+}
+model Fuel_card {
+        id          String  @id @default(cuid())
+number  Int
+pin Int
+active  Boolean  @default(true)
+station_brend Station_brend @default(OKKO)
+}
+
+enum Station_brend {
+    OKKO
+    WOG
 }
 
 enum Role {
