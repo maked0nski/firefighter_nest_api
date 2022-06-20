@@ -11,22 +11,21 @@ datasource db {
 }
 
 model User {
-  id            Int                 @id @default(autoincrement())
-  createdAt     DateTime            @default(now())
-  updatedAt     DateTime            @updatedAt
-  email         String              @unique
+  id            Int         @id @default(autoincrement())
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+  email         String      @unique
   password      String
   user_info     UserInfo?
-  image         String?             @default("https://www.gravatar.com/avatar/00000000000000000000000000000000?d=mp&f=y")
-  role          Role                @default(USER)
-  position_id   Position            @relation(fields: [positionId], references: [id])
-  car_id        Car                 @relation(fields: [carId], references: [id])
-  fuel_card     UsersOnFuel_cards[]
-  refresh_token String?             @db.VarChar(500)
-  access_token  String?             @db.VarChar(500)
+  image         String?     @default("https://www.gravatar.com/avatar/00000000000000000000000000000000?d=mp&f=y")
+  role          Role        @default(USER)
+  position_id   Position?   @relation(fields: [positionId], references: [id])
+  car_id        Car?        @relation(fields: [carId], references: [id])
+  fuel_card    Fuel_card[]?
+  refresh_token String?     @db.VarChar(500)
+  access_token  String?     @db.VarChar(500)
   positionId    Int
   carId         Int
-
 }
 
 model UserInfo {
@@ -36,7 +35,7 @@ model UserInfo {
   fathersname String
   phone       String @unique
   user        User   @relation(fields: [userId], references: [id])
-  userId      Int
+  userId      Int    @unique
 }
 
 model Position {
@@ -58,21 +57,12 @@ model Car {
 }
 
 model Fuel_card {
-  id            Int                 @id @default(autoincrement())
+  id            Int           @id @default(autoincrement())
   number        Int
   pin           Int
-  active        Boolean             @default(true)
-  station_brend Station_brend       @default(OKKO)
-  Users         UsersOnFuel_cards[]
-}
-
-model UsersOnFuel_cards {
-  user        User      @relation(fields: [userId], references: [id])
-  userId      Int
-  fuel_card   Fuel_card @relation(fields: [fuel_cardId], references: [id])
-  fuel_cardId Int
-
-  @@id([userId, fuel_cardId])
+  active        Boolean       @default(true)
+  station_brend Station_brend @default(OKKO)
+  users         User[]
 }
 
 enum Station_brend {

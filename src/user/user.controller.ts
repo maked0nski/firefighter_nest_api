@@ -29,11 +29,11 @@ export class UserController {
         return this.authUserService.createAuthUser(userDto);
     }
 
-    @HttpCode(HttpStatus.CREATED)
-    @Put('/:id')
-    update(@Param('id') id: string, @Body() userDto: CreateUserDto) {
-        return this.authUserService.updateUser(userDto, id);
-    }
+    // @HttpCode(HttpStatus.CREATED)
+    // @Put('/:id')
+    // update(@Param('id') id: string, @Body() userDto: CreateUserDto) {
+    //     return this.authUserService.updateUser(userDto, id);
+    // }
 
     @HttpCode(HttpStatus.NOT_FOUND)
     @Delete('/id')
