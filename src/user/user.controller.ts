@@ -1,7 +1,8 @@
-import {Body, Controller, Delete, Get, HttpCode, HttpStatus, Param, Post} from '@nestjs/common';
+import {Body, Controller, Delete, Get, HttpCode, HttpStatus, Param, Post, Put} from '@nestjs/common';
 
-import {UserDto} from "./dto/user.dto";
+import {CreateUserDto} from "./dto/create.user.dto";
 import {UserService} from "./user.service";
+import {User} from "@prisma/client";
 
 @Controller('user-login')
 export class UserController {
@@ -18,20 +19,20 @@ export class UserController {
     @HttpCode(HttpStatus.OK)
     @Get('/:id')
     // getById(@Param() params): string {  //Якщо беремо всі параметри і пошук
-    getById(@Param('id') id: string): string {  //Якщо беремо тільки певний параметр
+    getById(@Param('id') id: string) {  //Якщо беремо тільки певний параметр
         return this.authUserService.getById(id);
     }
 
     @HttpCode(HttpStatus.CREATED)
     @Post()
-    save(@Body() createAuthUserDTO: UserDto) {
-        return this.authUserService.createAuthUser(createAuthUserDTO);
+    save(@Body() userDto: CreateUserDto) {
+        return this.authUserService.createAuthUser(userDto);
     }
 
     @HttpCode(HttpStatus.CREATED)
-    @Post('/:id')
-    update(@Param('id') id: string, @Body() createAuthUserDTO: UserDto) {
-        return createAuthUserDTO;
+    @Put('/:id')
+    update(@Param('id') id: string, @Body() userDto: CreateUserDto) {
+        return this.authUserService.updateUser(userDto, id);
     }
 
     @HttpCode(HttpStatus.NOT_FOUND)
