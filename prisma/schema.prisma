@@ -14,46 +14,43 @@ model User {
   id            Int         @id @default(autoincrement())
   createdAt     DateTime    @default(now())
   updatedAt     DateTime    @updatedAt
+  surename      String // Прізвище
+  name          String // Імя
+  fathersname   String // По батькові
+  phone         String      @unique // Телефон
   email         String      @unique
+  birthday      DateTime?    @db.Date
   password      String
-  user_info     UserInfo?
   image         String?     @default("https://www.gravatar.com/avatar/00000000000000000000000000000000?d=mp&f=y")
   role          Role        @default(USER)
   position_id   Position?   @relation(fields: [positionId], references: [id])
-  car_id        Car?        @relation(fields: [carId], references: [id])
-  fuel_card    Fuel_card[]?
+  car           Car?
+  fuel_card     Fuel_card[]
   refresh_token String?     @db.VarChar(500)
   access_token  String?     @db.VarChar(500)
-  positionId    Int
-  carId         Int
-}
+  positionId    Int?
 
-model UserInfo {
-  id          Int    @id @default(autoincrement())
-  surename    String
-  name        String
-  fathersname String
-  phone       String @unique
-  user        User   @relation(fields: [userId], references: [id])
-  userId      Int    @unique
+  @@index([email])
+  @@map(name: "users")
 }
 
 model Position {
   id       Int    @id @default(autoincrement())
-  position String
-  User     User[]
+  position String // Посада на роботі
+  user     User[] // Спикок працівників
 }
 
 model Car {
   id           Int      @id @default(autoincrement())
-  vin          String
-  model        String
-  fuel         String
-  year         String
-  passport_car String
-  oddometr     Int
-  insurance    DateTime
-  User         User[]
+  vin          String // Він номер машини
+  model        String // Модель машини
+  fuel         String // На якому паливі
+  year         String // рік випуску авто
+  passport_car String // Номер техпаспорта авто
+  oddometr     Int // Показник оддометра авто (скільки проїхав км)
+  insurance    DateTime // дата страховки авто
+  user         User?    @relation(fields: [userId], references: [id]) // За ким закріплене авто
+  userId       Int?     @unique
 }
 
 model Fuel_card {
@@ -62,7 +59,8 @@ model Fuel_card {
   pin           Int
   active        Boolean       @default(true)
   station_brend Station_brend @default(OKKO)
-  users         User[]
+  users         User?         @relation(fields: [userId], references: [id])
+  userId        Int?
 }
 
 enum Station_brend {

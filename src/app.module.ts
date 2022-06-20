@@ -2,7 +2,6 @@ import { Module } from '@nestjs/common';
 import {ConfigModule} from "@nestjs/config";
 
 import { UserModule } from './user/user.module';
-import { ProfileModule } from './profile/profile.module';
 
 @Module({
   imports: [
@@ -10,8 +9,6 @@ import { ProfileModule } from './profile/profile.module';
           envFilePath: `.${process.env.NONE_ENV}.env`
       }),
       UserModule,
-      ProfileModule,
-
   ],
   providers: [],
 })

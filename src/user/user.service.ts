@@ -17,12 +17,24 @@ export class UserService {
         return this.prismaService.user.findUnique({where: {id: Number(id)}});
     }
 
-    createAuthUser(data: Prisma.UserCreateInput): Promise<User>{
+
+    createAuthUser(data: Prisma.UserCreateInput): Promise<User> {
         return this.prismaService.user.create({data});
 
     }
 
-    updateUser(data:Prisma.UserUpdateInput, userId: string):Promise<User>{
-        return  this.prismaService.user.update({where:{id:Number(userId)},data:{image:data.image, role:data.role }})
+    updateUser(data: Prisma.UserUpdateInput, userId: string): Promise<User> {
+        return this.prismaService.user.update({
+            where: {id: Number(userId)},
+            data: {
+                surename: data.surename,
+                name: data.name,
+                fathersname: data.fathersname,
+                phone: data.phone,
+                password: data.password,
+                image: data.image,
+                role: data.role,
+            }
+        })
     }
 }
