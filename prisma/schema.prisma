@@ -14,12 +14,12 @@ model User {
   id            Int         @id @default(autoincrement())
   createdAt     DateTime    @default(now())
   updatedAt     DateTime    @updatedAt
-  surename      String // Прізвище
-  name          String // Імя
-  fathersname   String // По батькові
-  phone         String      @unique // Телефон
+  surename      String? // Прізвище
+  name          String? // Імя
+  fathersname   String? // По батькові
+  phone         String?     @unique // Телефон
   email         String      @unique
-  birthday      DateTime?    @db.Date
+  birthday      DateTime?   @db.Date
   password      String
   image         String?     @default("https://www.gravatar.com/avatar/00000000000000000000000000000000?d=mp&f=y")
   role          Role        @default(USER)

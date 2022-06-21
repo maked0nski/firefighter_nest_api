@@ -17,6 +17,12 @@ export class UserService {
         return this.prismaService.user.findUnique({where: {id: Number(id)}});
     }
 
+    getUserByEmail(email: string): Promise<User> {
+        return this.prismaService.user.findUnique({
+            where: {email: email}
+        })
+    }
+
 
     createAuthUser(data: Prisma.UserCreateInput): Promise<User> {
         return this.prismaService.user.create({data});

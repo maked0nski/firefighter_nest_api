@@ -6,28 +6,26 @@ export class CreateUserDto {
 
     @ApiProperty({example: 'Клопотенко', description: 'Прізвище'})
     @IsString()
-    @IsNotEmpty()
-    @Length(2, 20)
+    @IsOptional()
     public surename: string;
 
     @ApiProperty({example: 'Андрій', description: "Ім'я"})
     @IsString()
-    @IsNotEmpty()
-    @Length(2, 20)
+    @IsOptional()
     public name: string;
 
     @ApiProperty({example: 'Богданович', description: "По батькові"})
     @IsString()
-    @IsNotEmpty()
-    @Length(2, 20)
+    @IsOptional()
     public fathersname: string;
 
     @ApiProperty({example: '050-321-21-12', description: "№ телефону. Унікальний"})
     @IsString()
-    @IsNotEmpty()
+    @IsOptional()
     public phone: string;
 
     @ApiProperty({example: 'klopotenko@gmail.com', description: "Електронна пошта. Унікальна"})
+    @IsString()
     @IsEmail()
     @IsNotEmpty()
     public email: string;
@@ -45,6 +43,7 @@ export class CreateUserDto {
 
     @ApiProperty({example: 'ADMIN', description: "Роль користувача USER, ADMIN чи ROOT"})
     @IsString()
+    @IsOptional()
     public image?: string;
     public role?: Role;
 }
