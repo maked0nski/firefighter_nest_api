@@ -42,7 +42,7 @@ export class AuthController {
     refreshTokens(
         @GetCurrentUserIdDecorator() userId: number,
         @GetCurrentUserDecorator('refreshToken') refreshToken: string
-    ) : Promise<Tokens>{
+    ): Promise<Tokens> {
         return this.authService.refreshTokens(userId, refreshToken);
     }
 
