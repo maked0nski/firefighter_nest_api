@@ -1,9 +1,14 @@
-import { Module } from '@nestjs/common';
-import { FuelCardService } from './fuel_card.service';
-import { FuelCardController } from './fuel_card.controller';
+import {Module} from '@nestjs/common';
+
+import {FuelCardService} from './fuel_card.service';
+import {FuelCardController} from './fuel_card.controller';
+import {PrismaService} from "../core/prisma.service";
 
 @Module({
-  providers: [FuelCardService],
-  controllers: [FuelCardController]
+    imports: [],
+    controllers: [FuelCardController],
+    providers: [FuelCardService, PrismaService],
+    exports: [PrismaService]
 })
-export class FuelCardModule {}
+export class FuelCardModule {
+}
