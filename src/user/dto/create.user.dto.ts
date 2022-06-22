@@ -41,9 +41,12 @@ export class CreateUserDto {
     @Length(8, 20)
     public password: string;
 
-    @ApiProperty({example: 'ADMIN', description: "Роль користувача USER, ADMIN чи ROOT"})
+    @ApiProperty({example: 'url', description: "посилання на аватарку користувача"})
     @IsString()
     @IsOptional()
     public image?: string;
+
+    @ApiProperty({example: 'ADMIN', description: "Роль користувача USER, ADMIN чи ROOT"})
+    @IsOptional()
     public role?: Role;
 }

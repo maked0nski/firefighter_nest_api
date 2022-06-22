@@ -58,7 +58,7 @@ model Fuel_card {
   number        String
   pin           String
   active        Boolean       @default(true)
-  station_brend String        @default(OKKO)
+  station_brend String        @default("OKKO")
   users         User?         @relation(fields: [userId], references: [id])
   userId        Int?
 }
