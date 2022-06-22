@@ -5,6 +5,7 @@ import {APP_GUARD} from "@nestjs/core";
 import {UserModule} from './user/user.module';
 import {AuthModule} from './auth/auth.module';
 import {AtGuard} from "./core/guards";
+import { FuelCardModule } from './fuel_card/fuel_card.module';
 
 @Module({
     imports: [
@@ -14,6 +15,7 @@ import {AtGuard} from "./core/guards";
         }),
         UserModule,
         AuthModule,
+        FuelCardModule,
     ],
     providers: [
         {
