@@ -36,7 +36,7 @@ export class AuthService {
                 }
                 throw error;
             })
-        const tokens = await this.getTokens(user.id, user.email);
+        const tokens = await this.getTokens(user.id, user.email, user.role);
         await this.updateRtHash(user.id, tokens.refresh_token);
         return tokens;
     }
@@ -52,7 +52,7 @@ export class AuthService {
         const passMatches = await argon.verify(user.password, userDto.password);
         if (!passMatches) throw  new ForbiddenException("Access Denied");
 
-        const tokens = await this.getTokens(user.id, user.email);
+        const tokens = await this.getTokens(user.id, user.email, user.role);
         await this.updateRtHash(user.id, tokens.refresh_token);
         return tokens;
     }
@@ -84,7 +84,7 @@ export class AuthService {
         const rtMatches = await argon.verify(user.refresh_token, rt);
         if (!rtMatches) throw new ForbiddenException("Access Denied");
 
-        const tokens = await this.getTokens(user.id, user.email);
+        const tokens = await this.getTokens(user.id, user.email, user.role);
         await this.updateRtHash(user.id, tokens.refresh_token);
         return tokens;
     }
@@ -102,15 +102,16 @@ export class AuthService {
         })
     }
 
-    async getTokens(userId: number, email: string): Promise<Tokens> {
+    async getTokens(userId: number, email: string, role:string): Promise<Tokens> {
         const jwtPayload: JwtPayload = {
             id: userId,
             email: email,
+            role: role
         };
         const [at, rt] = await Promise.all([
             this.jwtService.signAsync(jwtPayload, {
                 secret: "Wery_Strong_AT_SECRET_KeY",
-                expiresIn: '15m'
+                expiresIn: '1h'
             }),
             this.jwtService.signAsync(jwtPayload, {
                 secret: "Wery_Strong_RT_SECRET_KeY",
@@ -122,6 +123,16 @@ export class AuthService {
             refresh_token: rt
         }
 
+    }
+
+    async getRole(userId: number): Promise<string> {
+        const user = await this.prismaService.user.findUnique({
+            where: {
+                id: userId
+            }
+        });
+
+        return user.role
     }
 
 }

@@ -39,6 +39,7 @@ export class UserService {
                 phone: data.phone,
                 password: data.password,
                 image: data.image,
+                birthday: data.birthday,
                 role: data.role,
             }
         })

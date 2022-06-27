@@ -4,9 +4,9 @@ import {Station_brend} from "../type";
 
 export class UpdateFuelCardDto {
 
-    @ApiProperty({example: '1234123412341234', description: 'Номер паливної карточки 8 цифр'})
+    @ApiProperty({example: '1234 1234 1234 1234', description: 'Номер паливної карточки 16 цифр роздылены по 4 пробелом'})
     @IsString()
-    @Length(16, 16)
+    @Length(19, 19)
     @IsOptional()
     public number?: string;
 

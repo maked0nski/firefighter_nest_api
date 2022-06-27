@@ -4,9 +4,9 @@ import {IsBoolean, IsEnum, IsNotEmpty, IsOptional, IsString, Length} from "class
 
 export class CreateFuelCardDto {
 
-    @ApiProperty({example: '1234123412341234', description: 'Номер паливної карточки 8 цифр'})
+    @ApiProperty({example: '1234 1234 1234 1234', description: 'Номер паливної карточки 16 цифр роздылены по 4 пробелом'})
     @IsString()
-    @Length(16,16)
+    @Length(19,19)
     public number: string;
 
     @ApiProperty({example: '1234', description: 'Пін код до карточки 4 цифри'})

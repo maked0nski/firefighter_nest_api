@@ -6,7 +6,14 @@ import {DocumentBuilder, SwaggerModule} from '@nestjs/swagger';
 async function bootstrap() {
     const PORT = process.env.PORT || 8080
     const app = await NestFactory.create(AppModule);
-    app.enableCors();
+    app.enableCors({
+
+        "origin": "*",
+        "methods": "GET,HEAD,PUT,PATCH,POST,DELETE",
+        "preflightContinue": false,
+        "optionsSuccessStatus": 204,
+        credentials: true,
+    });
     app.useGlobalPipes(new ValidationPipe());
     // const reflector = new Reflector();
     // app.useGlobalGuards(new AtGuard(reflector));

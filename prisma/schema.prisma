@@ -1,5 +1,6 @@
 // Моя схема звязків
 // https://drawsql.app/pozservice/diagrams/fire-service#
+// DATABASE_URL="mysql://root:rootroot@localhost:3306/firefighter_nest"
 
 generator client {
   provider = "prisma-client-js"
@@ -19,7 +20,7 @@ model User {
   fathersname   String? // По батькові
   phone         String?     @unique // Телефон
   email         String      @unique
-  birthday      DateTime?   @db.Date
+  birthday      String?
   password      String
   image         String?     @default("https://www.gravatar.com/avatar/00000000000000000000000000000000?d=mp&f=y")
   role          Role        @default(USER)
@@ -27,7 +28,6 @@ model User {
   car           Car?
   fuel_card     Fuel_card[]
   refresh_token String?     @db.VarChar(500)
-  access_token  String?     @db.VarChar(500)
   positionId    Int?
 
   @@index([email])
@@ -54,18 +54,13 @@ model Car {
 }
 
 model Fuel_card {
-  id            Int           @id @default(autoincrement())
+  id            Int     @id @default(autoincrement())
   number        String
   pin           String
-  active        Boolean       @default(true)
-  station_brend String        @default("OKKO")
-  users         User?         @relation(fields: [userId], references: [id])
+  active        Boolean @default(true)
+  station_brend String  @default("OKKO")
+  users         User?   @relation(fields: [userId], references: [id])
   userId        Int?
-}
-
-enum Station_brend {
-  OKKO
-  WOG
 }
 
 enum Role {

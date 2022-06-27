@@ -1,5 +1,5 @@
 import {Role} from "@prisma/client";
-import {IsDateString, IsNotEmpty, IsOptional, IsString} from "class-validator";
+import { IsNotEmpty, IsOptional, IsString} from "class-validator";
 import {ApiProperty} from "@nestjs/swagger";
 
 export class UpdateUserDto {
@@ -19,13 +19,14 @@ export class UpdateUserDto {
     @IsOptional()
     public fathersname: string;
 
-    @ApiProperty({example: '31.12.1982', description: "Дата народження"})
+    @ApiProperty({example: '31.12.1982', description: "Дата народження строка"})
+    @IsString()
     @IsOptional()
-    @IsDateString()
-    public birthday: Date;
+    public birthday: string;
 
     @ApiProperty({example: 'qwerty12', description: "Пароль від 8 до 20 символів"})
     @IsNotEmpty()
+    @IsOptional()
     public password?: string;
 
     @ApiProperty({example: 'ADMIN', description: "Роль користувача USER, ADMIN чи ROOT"})

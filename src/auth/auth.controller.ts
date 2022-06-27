@@ -1,11 +1,12 @@
 import {Body, Controller, HttpCode, HttpStatus, Post, UseGuards} from '@nestjs/common';
-import {ApiBasicAuth, ApiOkResponse, ApiOperation, ApiTags} from "@nestjs/swagger";
+import {ApiOkResponse, ApiOperation, ApiTags} from "@nestjs/swagger";
 
 import {AuthUserDto} from "./dto";
 import {AuthService} from "./auth.service";
 import {Tokens} from "./types";
 import {AtGuard, RtGuard} from "../core/guards";
 import {GetCurrentUserDecorator, GetCurrentUserIdDecorator, Public} from "../core/decorators";
+import {GetCurrentUserRoleDecorator} from "../core/decorators";
 
 @ApiTags('Auth')
 @Controller('auth')
@@ -14,6 +15,7 @@ export class AuthController {
     constructor(private authService: AuthService) {
     }
 
+    @Public()
     @ApiOperation({summary: 'Registration user'})
     @ApiOkResponse({
         status: HttpStatus.CREATED, schema: {
@@ -23,13 +25,13 @@ export class AuthController {
             }
         }
     })
-    @Public()
-    @Post('local/register')
+    @Post('register')
     @HttpCode(HttpStatus.CREATED)
     register(@Body() authUserDto: AuthUserDto): Promise<Tokens> {
         return this.authService.registration(authUserDto);
     }
 
+    @Public()
     @ApiOperation({summary: 'Login user'})
     @ApiOkResponse({
         status: HttpStatus.OK, schema: {
@@ -39,24 +41,23 @@ export class AuthController {
             }
         }
     })
-    @Public()
-    @Post('local/login')
+    @Post('login')
     @HttpCode(HttpStatus.OK)
     login(@Body() authUserDto: AuthUserDto): Promise<Tokens> {
         return this.authService.login(authUserDto);
     }
 
 
-    @ApiOperation({summary: 'Logout user'})
-    @ApiBasicAuth('logout')
-    @ApiOkResponse({status: HttpStatus.OK, schema: {example:true}})
     @Post('logout')
+    @ApiOperation({summary: 'Logout user'})
+    @ApiOkResponse({status: HttpStatus.OK, schema: {example: true}})
     @UseGuards(AtGuard)
     @HttpCode(HttpStatus.OK)
     logout(@GetCurrentUserIdDecorator() userId: number): Promise<boolean> {
         return this.authService.logout(userId);
     }
 
+    @Public()
     @ApiOperation({summary: 'Refresh tokens user'})
     @ApiOkResponse({
         status: HttpStatus.OK, schema: {
@@ -66,7 +67,6 @@ export class AuthController {
             }
         }
     })
-    @Public()
     @UseGuards(RtGuard)
     @Post('refresh')
     @HttpCode(HttpStatus.OK)
@@ -76,5 +76,14 @@ export class AuthController {
     ): Promise<Tokens> {
         return this.authService.refreshTokens(userId, refreshToken);
     }
+
+    @UseGuards(AtGuard)
+    @HttpCode(HttpStatus.OK)
+    @Post('role')
+    getRoleByTokken(@GetCurrentUserRoleDecorator() role: string,) {
+        console.log("getRoleByTokken userId = " + role)
+        return role
+    }
+
 
 }

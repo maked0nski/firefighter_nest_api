@@ -6,6 +6,7 @@ import {UserModule} from './user/user.module';
 import {AuthModule} from './auth/auth.module';
 import {AtGuard} from "./core/guards";
 import { FuelCardModule } from './fuel_card/fuel_card.module';
+import { PositionModule } from './position/position.module';
 
 @Module({
     imports: [
@@ -16,6 +17,7 @@ import { FuelCardModule } from './fuel_card/fuel_card.module';
         UserModule,
         AuthModule,
         FuelCardModule,
+        PositionModule,
     ],
     providers: [
         {
