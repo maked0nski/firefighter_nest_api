@@ -58,38 +58,42 @@ export class UserService {
     }
 
     async updateUser(id: number, data: UpdateUserDto): Promise<UserModel> {
-        return await this.prismaService.user
-            .update({
-                where: {id},
-                data: {
-                    surename: data.surename,
-                    name: data.name,
-                    fathersname: data.fathersname,
-                    phone: data.phone,
-                    birthday: data.birthday,
-                    password: data.password,
-                    image: data.image,
-                    role: data.role,
-                    position_id: {
-                        connect: {
-                            id: Number(data.position_id)
-                        }
-                    },
-                    car: {
-                        connect: {
-                            id: Number(data.car)
-                        }
-                    },
-                    fuel_card: {
-                        connect: {
-                            id: Number(data.fuel_card)
-                        }
-                    },
+        try {
+            return await this.prismaService.user
+                .update({
+                    where: {id},
+                    data: {
+                        ...data,
+                        position_id: {
+                            connect: {
+                                id: Number(data.position_id)
+                            }
+                        },
+                        car: {
+                            connect: {
+                                id: Number(data.car)
+                            }
+                        },
+                        fuel_card: {
+                            connect: {
+                                id: Number(data.fuel_card)
+                            }
+                        },
+
+                    }
+                })
+        } catch (error) {            // TODO  НЕ вдається зробити кеч
+            if (error instanceof PrismaClientKnownRequestError) {
+                if (error.code === 'P2002') {
+                    throw new ForbiddenException('Credentials incorrect');
                 }
-            })
-        // .catch((error)=>{            // TODO  НЕ вдається зробити кеч
-        //
-        // })
+                if (error.code === 'P2025') {
+                    throw new NotFoundException(Exception.USER_NOT_FOUND)
+                }
+            }
+            console.log("position service update error code: ", error.code)
+            throw error;
+        }
     }
 
     async deleteUser(id: number): Promise<void> {

@@ -35,11 +35,18 @@ export class PositionService {
         return await this.prismaService.position.findUnique({
             where: {
                 id
-            }
+            },
+            rejectOnNotFound: true
         })
             .catch((error) => {
-                console.log("position service getById error code: ", error.code)
-                throw new NotFoundException(Exception.POSITION_NOT_FOUND)
+                if (error instanceof PrismaClientKnownRequestError) {
+                    if (error.code==='P2025'){
+                        throw new NotFoundException(Exception.POSITION_NOT_FOUND)
+                    }
+                    console.log("position service update new error code: ", error.code)
+                }
+                console.log("position service update new error code: ", error.code)
+                throw error;
             })
     }
 
@@ -55,6 +62,9 @@ export class PositionService {
                     if (error.code === 'P2002') {
                         throw new ForbiddenException('Credentials incorrect');
                     }
+                    if (error.code==='P2025'){
+                        throw new NotFoundException(Exception.POSITION_NOT_FOUND)
+                    }
                 }
                 console.log("position service update error code: ", error.code)
                 throw error;
@@ -69,7 +79,7 @@ export class PositionService {
             })
             .catch((error) => {
                 console.log("position service delete error code: ", error.code)
-                throw new NotFoundException(Exception.CARD_NOT_FOUND)
+                throw new NotFoundException(Exception.POSITION_NOT_FOUND)
             });
     }
 }

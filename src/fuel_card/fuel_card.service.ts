@@ -71,8 +71,16 @@ export class FuelCardService {
                 // }
             })
             .catch((error) => {
-                console.log(error.code)
-                throw new NotFoundException(Exception.CARD_NOT_FOUND)
-            })
+                if (error instanceof PrismaClientKnownRequestError) {
+                    if (error.code === 'P2002') {
+                        throw new ForbiddenException('Credentials incorrect');
+                    }
+                    if (error.code==='P2025'){
+                        throw new NotFoundException(Exception.CARD_NOT_FOUND)
+                    }
+                }
+                console.log("position service update error code: ", error.code)
+                throw error;
+            });
     }
 }
