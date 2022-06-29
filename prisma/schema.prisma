@@ -15,9 +15,9 @@ model User {
   id            Int         @id @default(autoincrement())
   createdAt     DateTime    @default(now())
   updatedAt     DateTime    @updatedAt
-  surename      String?     // Прізвище
-  name          String?     // Імя
-  fathersname   String?     // По батькові
+  surename      String? // Прізвище
+  name          String? // Імя
+  fathersname   String? // По батькові
   phone         String?     @unique // Телефон
   email         String      @unique
   birthday      String?
@@ -41,16 +41,16 @@ model Position {
 }
 
 model Car {
-  id           Int      @id @default(autoincrement())
+  id           Int    @id @default(autoincrement())
   vin          String // Він номер машини
   model        String // Модель машини
   fuel         String // На якому паливі
   year         String // рік випуску авто
   passport_car String // Номер техпаспорта авто
   oddometr     Int // Показник оддометра авто (скільки проїхав км)
-  insurance    DateTime // дата страховки авто
-  user         User?    @relation(fields: [userId], references: [id]) // За ким закріплене авто
-  userId       Int?     @unique
+  insurance    String // дата страховки авто
+  user         User?  @relation(fields: [userId], references: [id]) // За ким закріплене авто
+  userId       Int?   @unique
 }
 
 model Fuel_card {

@@ -1,7 +1,7 @@
 import {ForbiddenException, Injectable, NotFoundException} from '@nestjs/common';
-import {PrismaService} from "../core/prisma.service";
+import {PrismaService} from "../_core/prisma.service";
 import {PositionDto} from "./dto";
-import {Exception} from "../exceptions";
+import {Exception} from "../_exceptions";
 import {PrismaClientKnownRequestError} from "@prisma/client/runtime";
 import {Position as PositionModel} from '@prisma/client';
 

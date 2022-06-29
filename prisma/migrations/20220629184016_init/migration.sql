@@ -13,7 +13,6 @@ CREATE TABLE `users` (
     `image` VARCHAR(191) NULL DEFAULT 'https://www.gravatar.com/avatar/00000000000000000000000000000000?d=mp&f=y',
     `role` ENUM('USER', 'ADMIN', 'ROOT') NOT NULL DEFAULT 'USER',
     `refresh_token` VARCHAR(500) NULL,
-    `access_token` VARCHAR(500) NULL,
     `positionId` INTEGER NULL,
 
     UNIQUE INDEX `users_phone_key`(`phone`),
@@ -39,7 +38,7 @@ CREATE TABLE `Car` (
     `year` VARCHAR(191) NOT NULL,
     `passport_car` VARCHAR(191) NOT NULL,
     `oddometr` INTEGER NOT NULL,
-    `insurance` DATETIME(3) NOT NULL,
+    `insurance` VARCHAR(191) NOT NULL,
     `userId` INTEGER NULL,
 
     UNIQUE INDEX `Car_userId_key`(`userId`),

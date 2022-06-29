@@ -1,10 +1,11 @@
 import {ForbiddenException, Injectable, NotFoundException} from '@nestjs/common';
 
-import {PrismaService} from "../core/prisma.service";
+import {PrismaService} from "../_core/prisma.service";
 import {User as UserModel} from '@prisma/client';
 import {CreateUserDto, UpdateUserDto} from "./dto";
-import {Exception} from "../exceptions";
+import {Exception} from "../_exceptions";
 import {PrismaClientKnownRequestError} from "@prisma/client/runtime";
+
 
 @Injectable()
 export class UserService {
@@ -57,29 +58,27 @@ export class UserService {
 
     }
 
-    async updateUser(id: number, data: UpdateUserDto): Promise<UserModel> {
+    async updateUser(userId: number, data: UpdateUserDto): Promise<UserModel> {
+        !data.position_id ? data.position_id = null : Number(data.position_id);
+        // !data.car ? data.car = null : Number(data.car);
+        !data.fuel_card ? data.fuel_card = null : Number(data.fuel_card);
+
+        console.log("position_id-", data.position_id)
+        console.log("car-", data.car)
+        console.log("fuel_card-", data.fuel_card)
+
         try {
             return await this.prismaService.user
                 .update({
-                    where: {id},
+                    where: {id: userId},
                     data: {
-                        ...data,
-                        position_id: {
-                            connect: {
-                                id: Number(data.position_id)
-                            }
-                        },
-                        car: {
-                            connect: {
-                                id: Number(data.car)
-                            }
-                        },
-                        fuel_card: {
-                            connect: {
-                                id: Number(data.fuel_card)
-                            }
-                        },
-
+                        surename: data.surename,
+                        name: data.name,
+                        fathersname: data.fathersname,
+                        phone: data.phone,
+                        birthday: data.birthday,
+                        image: data.image,
+                        role: data.role,
                     }
                 })
         } catch (error) {            // TODO  НЕ вдається зробити кеч
@@ -94,6 +93,34 @@ export class UserService {
             console.log("position service update error code: ", error.code)
             throw error;
         }
+    }
+
+    addPosition(userId: number, positionId: number) {
+        this.prismaService.user
+            .update({
+                where: {id: userId},
+                data: {
+                    position_id: {
+                        connect: {
+                            id: positionId
+                        }
+                    }
+                }
+            })
+    }
+
+    addCar(userId: number, carId: number) {
+        this.prismaService.user
+            .update({
+                where: {id: userId},
+                data: {
+                    car: {
+                        connect: {
+                            id: carId
+                        }
+                    }
+                }
+            })
     }
 
     async deleteUser(id: number): Promise<void> {

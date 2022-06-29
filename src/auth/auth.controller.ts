@@ -4,9 +4,9 @@ import {ApiOkResponse, ApiOperation, ApiTags} from "@nestjs/swagger";
 import {AuthUserDto} from "./dto";
 import {AuthService} from "./auth.service";
 import {Tokens} from "./types";
-import {AtGuard, RtGuard} from "../core/guards";
-import {GetCurrentUserDecorator, GetCurrentUserIdDecorator, Public} from "../core/decorators";
-import {GetCurrentUserRoleDecorator} from "../core/decorators";
+import {AtGuard, RtGuard} from "../_core/guards";
+import {GetCurrentUserDecorator, GetCurrentUserIdDecorator, Public} from "../_core/decorators";
+import {GetCurrentUserRoleDecorator} from "../_core/decorators";
 
 @ApiTags('Auth')
 @Controller('auth')

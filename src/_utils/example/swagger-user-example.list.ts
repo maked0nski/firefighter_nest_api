@@ -35,6 +35,58 @@ export const SWAGGER_EXAMPLE_USERS_LIST = [
     }
 ]
 export const SWAGGER_EXAMPLE_USER_BY_ID = {
+    id: 1,
+    createdAt: "2022-06-20T17:19:41.302Z",
+    updatedAt: "2022-06-20T17:19:41.303Z",
+    surename: "Ivancovskiy",
+    name: "Ivan",
+    fathersname: "Ivanjvich",
+    phone: "050-93-99-554",
+    email: "Ivan1@gmail.com",
+    birthday: "25.02.1990",
+    password: "55484896",
+    image: "https://www.gravatar.com/avatar/ivan.jpg",
+    role: "USER",
+    refresh_token: null,
+    access_token: null,
+    positionId: null
+}
+export const SWAGGER_EXAMPLE_CAR = {
+    id: 1,
+    createdAt: "2022-06-20T17:19:41.302Z",
+    updatedAt: "2022-06-20T17:19:41.303Z",
+    surename: "Ivancovskiy",
+    name: "Ivan",
+    fathersname: "Ivanjvich",
+    phone: "050-93-99-554",
+    email: "Ivan1@gmail.com",
+    birthday: "25.02.1990",
+    password: "55484896",
+    image: "https://www.gravatar.com/avatar/ivan.jpg",
+    role: "USER",
+    refresh_token: null,
+    access_token: null,
+    positionId: null
+}
+export const SWAGGER_EXAMPLE_CARS_LIST = [
+    {
+        id: 1,
+        createdAt: "2022-06-20T17:19:41.302Z",
+        updatedAt: "2022-06-20T17:19:41.303Z",
+        surename: "Ivancovskiy",
+        name: "Ivan",
+        fathersname: "Ivanjvich",
+        phone: "050-93-99-554",
+        email: "Ivan1@gmail.com",
+        birthday: "25.02.1990",
+        password: "55484896",
+        image: "https://www.gravatar.com/avatar/ivan.jpg",
+        role: "USER",
+        refresh_token: null,
+        access_token: null,
+        positionId: null
+    },
+    {
         id: 1,
         createdAt: "2022-06-20T17:19:41.302Z",
         updatedAt: "2022-06-20T17:19:41.303Z",
@@ -51,3 +103,4 @@ export const SWAGGER_EXAMPLE_USER_BY_ID = {
         access_token: null,
         positionId: null
     }
+]

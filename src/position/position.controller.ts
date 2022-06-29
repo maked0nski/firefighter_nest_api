@@ -4,7 +4,7 @@ import {ApiOperation, ApiTags} from "@nestjs/swagger";
 import {Position as PositionModel} from '@prisma/client';
 import {PositionService} from "./position.service";
 import {PositionDto} from "./dto";
-import {AtGuard} from "../core/guards";
+import {AtGuard} from "../_core/guards";
 
 
 @ApiTags('Positions list')

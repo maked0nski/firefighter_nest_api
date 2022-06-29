@@ -1,11 +1,11 @@
 import {ForbiddenException, Injectable, NotFoundException} from '@nestjs/common';
-import {PrismaService} from "../core/prisma.service";
+import {PrismaService} from "../_core/prisma.service";
 import {PrismaClientKnownRequestError} from "@prisma/client/runtime";
 import {Prisma} from "@prisma/client";
 
 import {UpdateFuelCardDto} from "./dto";
 import {Fuel_card as Fuel_cardModel} from '@prisma/client';
-import {Exception} from "../exceptions";
+import {Exception} from "../_exceptions";
 
 @Injectable()
 export class FuelCardService {
@@ -19,10 +19,11 @@ export class FuelCardService {
 
 
     async getFuelCardById(id: number): Promise<any> {
-        return await this.prismaService.fuel_card.findUnique({
-            where: {id},
-            rejectOnNotFound: true
-        })
+        return await this.prismaService.fuel_card
+            .findUnique({
+                where: {id},
+                rejectOnNotFound: true
+            })
             .catch((error) => {
                 console.log(error.code)
                 throw new NotFoundException(Exception.CARD_NOT_FOUND)
@@ -37,7 +38,7 @@ export class FuelCardService {
             .catch((error) => {
                 if (error instanceof PrismaClientKnownRequestError) {
                     if (error.code === 'P2002') {
-                        throw new ForbiddenException('Credentials incorrect');
+                        throw new ForbiddenException(Exception.FORBIDDEN);
                     }
                 }
                 throw error;
@@ -62,20 +63,13 @@ export class FuelCardService {
             .update({
                 where: {id},
                 data
-                // data: {
-                //     number: updateFuelCardDto.number,
-                //     pin: updateFuelCardDto.pin,
-                //     active: updateFuelCardDto.active,
-                //     station_brend: updateFuelCardDto.station_brend,
-                //     userId: updateFuelCardDto.userId
-                // }
             })
             .catch((error) => {
                 if (error instanceof PrismaClientKnownRequestError) {
                     if (error.code === 'P2002') {
-                        throw new ForbiddenException('Credentials incorrect');
+                        throw new ForbiddenException(Exception.FORBIDDEN);
                     }
-                    if (error.code==='P2025'){
+                    if (error.code === 'P2025') {
                         throw new NotFoundException(Exception.CARD_NOT_FOUND)
                     }
                 }
