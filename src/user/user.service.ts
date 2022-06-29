@@ -17,6 +17,31 @@ export class UserService {
         return await this.prismaService.user.findMany();
     }
 
+    async getAllWithCar(): Promise<UserModel[]> {
+        return await this.prismaService.user.findMany({
+            include: {
+                car: true
+            }
+        });
+    }
+
+    async getAllWithPosition(): Promise<UserModel[]> {
+        return await this.prismaService.user.findMany({
+            include: {
+                position_id: true
+            }
+        });
+    }
+
+    async getAllWithCarAndPosition(): Promise<UserModel[]> {
+        return await this.prismaService.user.findMany({
+            include: {
+                position_id: true,
+                car: true
+            }
+        });
+    }
+
     async getById(id: number): Promise<UserModel> {
         return await this.prismaService.user.findUnique({
             where: {id: id},
@@ -28,19 +53,6 @@ export class UserService {
             })
 
     }
-
-    // async getByUniqueInput(userWhereUniqueInput: Prisma.UserWhereUniqueInput): Promise<UserModel> {
-    //     return this.prismaService.user.findUnique({
-    //         where: userWhereUniqueInput
-    //     });
-    // }
-
-    // getUserByEmail(email: string): Promise<User> {
-    //     return this.prismaService.user.findUnique({
-    //         where: {email: email}
-    //     })
-    // }
-
 
     async createAuthUser(data: CreateUserDto): Promise<UserModel> {
         return await this.prismaService.user
@@ -95,8 +107,8 @@ export class UserService {
         }
     }
 
-    addPosition(userId: number, positionId: number) {
-        this.prismaService.user
+    async addPosition(userId: number, positionId: number) {
+        return await this.prismaService.user
             .update({
                 where: {id: userId},
                 data: {
@@ -109,8 +121,8 @@ export class UserService {
             })
     }
 
-    addCar(userId: number, carId: number) {
-        this.prismaService.user
+    async addCar(userId: number, carId: number) {
+        return await this.prismaService.user
             .update({
                 where: {id: userId},
                 data: {

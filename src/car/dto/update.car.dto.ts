@@ -35,7 +35,7 @@ export class UpdateCarDto {
     @ApiProperty({example: '4 1234 1234', description: 'Показник оддометра авто (скільки проїхав км)'})
     @IsString()
     @IsOptional()
-    public oddometr?: string;
+    public oddometr?: number;
 
 
     @ApiProperty({example: '01.01.2022', description: 'Дата страховки авто'})

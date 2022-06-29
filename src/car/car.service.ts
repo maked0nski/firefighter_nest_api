@@ -4,6 +4,7 @@ import {PrismaService} from "../_core/prisma.service";
 import {Car as CarModel} from "@prisma/client";
 import {Exception} from "../_exceptions";
 import {PrismaClientKnownRequestError} from "@prisma/client/runtime";
+import {UpdateCarDto} from "./dto/update.car.dto";
 
 @Injectable()
 export class CarService {
@@ -26,11 +27,9 @@ export class CarService {
             });
     }
 
-
     async getAll(): Promise<CarModel[]> {
         return await this.prismaService.car.findMany();
     }
-
 
     async getById(id: number): Promise<CarModel> {
         return await this.prismaService.car
@@ -44,11 +43,19 @@ export class CarService {
             })
     };
 
-    async update(id: number, car: CreateCarDto): Promise<CarModel> {
+    async update(id: number, car: Partial<UpdateCarDto>): Promise<CarModel> {
         return await this.prismaService.car
             .update({
                 where:{id},
-                data:{...car}
+                data:{
+                    vin: car.vin,
+                    model: car.model,
+                    fuel:car.fuel,
+                    year:car.year,
+                    passport_car:car.passport_car,
+                    oddometr:car.oddometr,
+                    insurance:car.insurance
+                }
             })
             .catch((error) => {
                 if (error instanceof PrismaClientKnownRequestError) {

@@ -9,6 +9,7 @@ import {
     SWAGGER_EXAMPLE_CAR, SWAGGER_EXAMPLE_CARS_LIST,
 } from "../_utils/example";
 import {Exception} from "../_exceptions";
+import {UpdateCarDto} from "./dto/update.car.dto";
 
 @ApiTags('Cars')
 @Controller('cars')
@@ -26,6 +27,7 @@ export class CarController {
         return this.carService.create(carDto)
     }
 
+    // @Public()
     @ApiOperation({summary: 'Get all cars list'})
     @CustomOkResponse({status: HttpStatus.OK, exampleData: SWAGGER_EXAMPLE_CARS_LIST})
     @HttpCode(HttpStatus.OK)
@@ -50,14 +52,14 @@ export class CarController {
     @ApiResponse({status: HttpStatus.NOT_FOUND, description: Exception.CAR_NOT_FOUND})
     @HttpCode(HttpStatus.CREATED)
     @Patch('/update/:id')
-    update(@Param('id') id: string, @Body() createCarDto: CreateCarDto) {
-        return this.carService.update(Number(id), createCarDto);
+    update(@Param('id') id: string, @Body() updateCarDto: UpdateCarDto) {
+        return this.carService.update(Number(id), updateCarDto);
     }
 
     @ApiOperation({summary: 'Delete car'})
     @ApiResponse({status: HttpStatus.NOT_FOUND, description: Exception.CAR_NOT_FOUND})
     @HttpCode(HttpStatus.NO_CONTENT)
-    @Delete('/delete/:id')
+    @Delete(':id')
     delete(@Param('id') id: string) {
         return this.carService.delete(Number(id));
     }

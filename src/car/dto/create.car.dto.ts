@@ -1,5 +1,5 @@
 import {ApiProperty} from "@nestjs/swagger";
-import {IsString, Length} from "class-validator";
+import {IsNumber, IsString, Length} from "class-validator";
 
 export class CreateCarDto {
 
@@ -28,7 +28,7 @@ export class CreateCarDto {
 
 
     @ApiProperty({example: '4 1234 1234', description: 'Показник оддометра авто (скільки проїхав км)'})
-    @IsString()
+    @IsNumber()
     public oddometr: number;
 
 
