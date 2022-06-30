@@ -1,15 +1,16 @@
 import {Body, Controller, Delete, Get, HttpCode, HttpStatus, Param, Patch, Post, UseGuards} from '@nestjs/common';
 import {ApiOperation, ApiResponse, ApiTags} from "@nestjs/swagger";
+import {Car as CarModel} from '@prisma/client';
 import {AtGuard} from "../_core/guards";
 import {CarService} from "./car.service";
-import {Car as CarModel} from '@prisma/client';
 import {CreateCarDto} from "./dto/create.car.dto";
 import {CustomOkResponse} from "../_utils";
+import {Exception} from "../_exceptions";
+import {UpdateCarDto} from "./dto/update.car.dto";
 import {
     SWAGGER_EXAMPLE_CAR, SWAGGER_EXAMPLE_CARS_LIST,
 } from "../_utils/example";
-import {Exception} from "../_exceptions";
-import {UpdateCarDto} from "./dto/update.car.dto";
+
 
 @ApiTags('Cars')
 @Controller('cars')
@@ -27,7 +28,6 @@ export class CarController {
         return this.carService.create(carDto)
     }
 
-    // @Public()
     @ApiOperation({summary: 'Get all cars list'})
     @CustomOkResponse({status: HttpStatus.OK, exampleData: SWAGGER_EXAMPLE_CARS_LIST})
     @HttpCode(HttpStatus.OK)
