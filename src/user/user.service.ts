@@ -210,8 +210,8 @@ export class UserService {
                         fuel_card: true
                     }
                 })
-        } catch (e) {
-            throw new HttpException(e.message, HttpStatus.BAD_REQUEST);
+        } catch (error) {
+            throw new HttpException(error.message, HttpStatus.BAD_REQUEST);
         }
     }
 
