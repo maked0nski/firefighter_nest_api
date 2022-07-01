@@ -13,7 +13,7 @@ datasource db {
 
 model User {
   id            Int         @id @default(autoincrement())
-  createdAt     DateTime    @default(now())
+  createdAt     DateTime    @default(now()) @db.Timestamp(6)
   updatedAt     DateTime    @updatedAt
   surename      String? // Прізвище
   name          String? // Імя

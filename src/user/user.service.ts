@@ -1,10 +1,10 @@
 import {ForbiddenException, Injectable, NotFoundException} from '@nestjs/common';
 
-import {PrismaService} from "../_core/prisma.service";
-import {User as UserModel} from '@prisma/client';
-import {CreateUserDto, UpdateUserDto} from "./dto";
-import {Exception} from "../_exceptions";
+import {PrismaService} from "../core/prisma.service";
+import {UpdateUserDto} from "./dto";
+import {Exception} from "../exceptions";
 import {PrismaClientKnownRequestError} from "@prisma/client/runtime";
+import {UserType} from "./type/userType";
 
 
 @Injectable()
@@ -13,38 +13,91 @@ export class UserService {
     constructor(private prismaService: PrismaService) {
     }
 
-    async getAll(): Promise<UserModel[]> {
-        return await this.prismaService.user.findMany();
-    }
-
-    async getAllWithCar(): Promise<UserModel[]> {
+    async getAll() {
         return await this.prismaService.user.findMany({
-            include: {
-                car: true
+            select: {
+                id: true,
+                surename: true,
+                name: true,
+                fathersname: true,
+                phone: true,
+                email: true,
+                birthday: true,
+                image: true,
+                role: true,
             }
         });
     }
 
-    async getAllWithPosition(): Promise<UserModel[]> {
-        return await this.prismaService.user.findMany({
-            include: {
-                position_id: true
+    async getAllWithCar(): Promise<UserType[]> {
+        return this.prismaService.user.findMany({
+            select: {
+                id: true,
+                surename: true,
+                name: true,
+                fathersname: true,
+                phone: true,
+                email: true,
+                birthday: true,
+                image: true,
+                role: true,
+                car: true,
             }
         });
     }
 
-    async getAllWithCarAndPosition(): Promise<UserModel[]> {
+    async getAllWithPosition(): Promise<UserType[]> {
         return await this.prismaService.user.findMany({
-            include: {
+            select: {
+                id: true,
+                surename: true,
+                name: true,
+                fathersname: true,
+                phone: true,
+                email: true,
+                birthday: true,
+                image: true,
+                role: true,
                 position_id: true,
-                car: true
             }
         });
     }
 
-    async getById(id: number): Promise<UserModel> {
+    async getAllWithCarAndPosition(): Promise<UserType[]> {
+        return await this.prismaService.user.findMany({
+            select: {
+                id: true,
+                surename: true,
+                name: true,
+                fathersname: true,
+                phone: true,
+                email: true,
+                birthday: true,
+                image: true,
+                role: true,
+                position_id: true,
+                car: true,
+            }
+        });
+    }
+
+    async getById(id: number): Promise<UserType> {
         return await this.prismaService.user.findUnique({
             where: {id: id},
+            select: {
+                id: true,
+                surename: true,
+                name: true,
+                fathersname: true,
+                phone: true,
+                email: true,
+                birthday: true,
+                image: true,
+                role: true,
+                car: true,
+                position_id: true,
+                fuel_card: true
+            },
             rejectOnNotFound: true
         })
             .catch((error) => {
@@ -54,30 +107,42 @@ export class UserService {
 
     }
 
-    async createAuthUser(data: CreateUserDto): Promise<UserModel> {
-        return await this.prismaService.user
-            .create({data})
-            .catch((error) => {
-                if (error instanceof PrismaClientKnownRequestError) {
-                    if (error.code === 'P2002') {
-                        throw new ForbiddenException('There is a unique constraint violation, a new user cannot be created with this email');
-                    }
-                    console.log("UserService, createAuthUser error code: ", error.code)
-                }
-                console.log("UserService, createAuthUser error code: ", error.code)
-                throw error;
-            });
+    // async createAuthUser(data: CreateUserDto): Promise<UserModel> {
+    //     return await this.prismaService.user
+    //         .create({
+    //             data: {
+    //                 email:data.email,
+    //                 password: data.password
+    //             },
+    //             select: {
+    //                 id: true,
+    //                 surename: true,
+    //                 name: true,
+    //                 fathersname: true,
+    //                 phone: true,
+    //                 email: true,
+    //                 birthday: true,
+    //                 image: true,
+    //                 role: true,
+    //                 car: true,
+    //                 position_id: true,
+    //                 fuel_card: true
+    //             }
+    //         })
+    //         .catch((error) => {
+    //             if (error instanceof PrismaClientKnownRequestError) {
+    //                 if (error.code === 'P2002') {
+    //                     throw new ForbiddenException('There is a unique constraint violation, a new user cannot be created with this email');
+    //                 }
+    //                 console.log("UserService, createAuthUser error code: ", error.code)
+    //             }
+    //             console.log("UserService, createAuthUser error code: ", error.code)
+    //             throw error;
+    //         });
+    //
+    // }
 
-    }
-
-    async updateUser(userId: number, data: UpdateUserDto): Promise<UserModel> {
-        !data.position_id ? data.position_id = null : Number(data.position_id);
-        // !data.car ? data.car = null : Number(data.car);
-        !data.fuel_card ? data.fuel_card = null : Number(data.fuel_card);
-
-        console.log("position_id-", data.position_id)
-        console.log("car-", data.car)
-        console.log("fuel_card-", data.fuel_card)
+    async updateUser(userId: number, data: UpdateUserDto): Promise<UserType> {
 
         try {
             return await this.prismaService.user
@@ -91,6 +156,20 @@ export class UserService {
                         birthday: data.birthday,
                         image: data.image,
                         role: data.role,
+                    },
+                    select: {
+                        id: true,
+                        surename: true,
+                        name: true,
+                        fathersname: true,
+                        phone: true,
+                        email: true,
+                        birthday: true,
+                        image: true,
+                        role: true,
+                        car: true,
+                        position_id: true,
+                        fuel_card: true
                     }
                 })
         } catch (error) {            // TODO  НЕ вдається зробити кеч
@@ -107,7 +186,7 @@ export class UserService {
         }
     }
 
-    async addPosition(userId: number, positionId: number) {
+    async addPosition(userId: number, positionId: number): Promise<UserType> {
         return await this.prismaService.user
             .update({
                 where: {id: userId},
@@ -117,11 +196,25 @@ export class UserService {
                             id: positionId
                         }
                     }
+                },
+                select: {
+                    id: true,
+                    surename: true,
+                    name: true,
+                    fathersname: true,
+                    phone: true,
+                    email: true,
+                    birthday: true,
+                    image: true,
+                    role: true,
+                    car: true,
+                    position_id: true,
+                    fuel_card: true
                 }
             })
     }
 
-    async addCar(userId: number, carId: number) {
+    async addCar(userId: number, carId: number): Promise<UserType> {
         return await this.prismaService.user
             .update({
                 where: {id: userId},
@@ -131,6 +224,20 @@ export class UserService {
                             id: carId
                         }
                     }
+                },
+                select: {
+                    id: true,
+                    surename: true,
+                    name: true,
+                    fathersname: true,
+                    phone: true,
+                    email: true,
+                    birthday: true,
+                    image: true,
+                    role: true,
+                    car: true,
+                    position_id: true,
+                    fuel_card: true
                 }
             })
     }
@@ -142,5 +249,6 @@ export class UserService {
         });
     }
 }
+
 // demoUser
 // P@aSsw0rds

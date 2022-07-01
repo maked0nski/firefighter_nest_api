@@ -1,11 +1,11 @@
 import {ForbiddenException, Injectable, NotFoundException} from '@nestjs/common';
-import {PrismaService} from "../_core/prisma.service";
+import {PrismaService} from "../core/prisma.service";
 import {PrismaClientKnownRequestError} from "@prisma/client/runtime";
 import {Prisma} from "@prisma/client";
 
 import {UpdateFuelCardDto} from "./dto";
 import {Fuel_card as Fuel_cardModel} from '@prisma/client';
-import {Exception} from "../_exceptions";
+import {Exception} from "../exceptions";
 
 @Injectable()
 export class FuelCardService {

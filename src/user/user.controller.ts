@@ -7,22 +7,24 @@ import {
     HttpStatus,
     Param,
     Patch,
-    Post,
     UseGuards
 } from '@nestjs/common';
-import {ApiOperation, ApiResponse, ApiTags} from '@nestjs/swagger';
+import {ApiForbiddenResponse, ApiNotFoundResponse, ApiOperation, ApiTags} from '@nestjs/swagger';
 
-import {User as UserModel} from '@prisma/client';
-import {AtGuard} from "../_core/guards";
-import {CreateUserDto} from "./dto";
+import {AtGuard} from "../core/guards";
 import {UserService} from "./user.service";
 import {UpdateUserDto} from "./dto";
-import {CustomOkResponse} from "../_utils";
+import {CustomOkResponse} from "../utils";
 import {
+    SWAGGER_EXAMPLE_USER,
     SWAGGER_EXAMPLE_USER_BY_ID,
     SWAGGER_EXAMPLE_USERS_LIST,
-} from "../_utils/example";
-import {Exception} from "../_exceptions";
+    SWAGGER_EXAMPLE_USERS_LIST_WITH_CAR,
+    SWAGGER_EXAMPLE_USERS_LIST_WITH_CAR_AND_POSITION,
+    SWAGGER_EXAMPLE_USERS_LIST_WITH_POSITION,
+} from "../utils/example";
+import {Exception} from "../exceptions";
+import {UserType} from "./type/userType";
 
 
 @ApiTags('Users')
@@ -30,91 +32,88 @@ import {Exception} from "../_exceptions";
 @UseGuards(AtGuard)
 export class UserController {
 
-    constructor(private readonly authUserService: UserService) {
+    constructor(private readonly userService: UserService) {
     }
 
     @ApiOperation({summary: 'Get all users'})
     @CustomOkResponse({status: HttpStatus.OK, exampleData: SWAGGER_EXAMPLE_USERS_LIST})
     @HttpCode(HttpStatus.OK)
     @Get()
-    getAll(): Promise<UserModel[]> {
-        return this.authUserService.getAll();
+    getAll() {
+        return this.userService.getAll();
     }
 
     @ApiOperation({summary: 'Get all users with car'})
-    @CustomOkResponse({status: HttpStatus.OK, exampleData: SWAGGER_EXAMPLE_USERS_LIST})
+    @CustomOkResponse({status: HttpStatus.OK, exampleData: SWAGGER_EXAMPLE_USERS_LIST_WITH_CAR})
     @HttpCode(HttpStatus.OK)
     @Get('/withCar')
-    getAllWithCar(): Promise<UserModel[]> {
-        return this.authUserService.getAllWithCar();
+    getAllWithCar(): Promise<UserType[]> {
+        return this.userService.getAllWithCar();
     }
 
     @ApiOperation({summary: 'Get all users with position'})
-    @CustomOkResponse({status: HttpStatus.OK, exampleData: SWAGGER_EXAMPLE_USERS_LIST})
+    @CustomOkResponse({status: HttpStatus.OK, exampleData: SWAGGER_EXAMPLE_USERS_LIST_WITH_POSITION})
     @HttpCode(HttpStatus.OK)
     @Get('withPosition')
-    getAllWithPosition(): Promise<UserModel[]> {
-        return this.authUserService.getAllWithPosition();
+    getAllWithPosition(): Promise<UserType[]> {
+        return this.userService.getAllWithPosition();
     }
 
     @ApiOperation({summary: 'Get all users with Car and position'})
-    @CustomOkResponse({status: HttpStatus.OK, exampleData: SWAGGER_EXAMPLE_USERS_LIST})
+    @CustomOkResponse({status: HttpStatus.OK, exampleData: SWAGGER_EXAMPLE_USERS_LIST_WITH_CAR_AND_POSITION})
     @HttpCode(HttpStatus.OK)
     @Get('withCarAndPosition')
-    getAllWithCarAndPosition(): Promise<UserModel[]> {
-        return this.authUserService.getAllWithCarAndPosition();
+    getAllWithCarAndPosition() {
+        return this.userService.getAllWithCarAndPosition();
     }
 
     @ApiOperation({summary: 'Get one user by id'})
     @CustomOkResponse({status: HttpStatus.OK, exampleData: SWAGGER_EXAMPLE_USER_BY_ID})
-    @ApiResponse({status: HttpStatus.NOT_FOUND, description: Exception.USER_NOT_FOUND})
+    @ApiNotFoundResponse({description: Exception.USER_NOT_FOUND})
     @HttpCode(HttpStatus.OK)
-    @Get('/byId/:id')
-    getById(@Param('id') id: string): Promise<UserModel> {  //Якщо беремо тільки певний параметр
-        return this.authUserService.getById(Number(id));
+    @Get(':id')
+    getById(@Param('id') id: string) {
+        return this.userService.getById(Number(id));
     }
 
-
-    @ApiOperation({summary: 'Create user'})
-    @ApiResponse({status: HttpStatus.FORBIDDEN, description: Exception.FORBIDDEN})
-    @CustomOkResponse({status: HttpStatus.CREATED, exampleData: SWAGGER_EXAMPLE_USER_BY_ID})
-    @HttpCode(HttpStatus.CREATED)
-    @Post()
-    save(@Body() userDto: CreateUserDto): Promise<UserModel> {
-        return this.authUserService.createAuthUser(userDto);
-    }
 
     @ApiOperation({summary: 'Update user'})
-    @CustomOkResponse({status: HttpStatus.CREATED, exampleData: SWAGGER_EXAMPLE_USER_BY_ID})
-    @ApiResponse({status: HttpStatus.FORBIDDEN, description: Exception.FORBIDDEN})
-    @ApiResponse({status: HttpStatus.NOT_FOUND, description: Exception.USER_NOT_FOUND})
+    @CustomOkResponse({status: HttpStatus.CREATED, exampleData: SWAGGER_EXAMPLE_USER})
+    @ApiForbiddenResponse({description: Exception.FORBIDDEN})
+    @ApiNotFoundResponse({description: Exception.USER_NOT_FOUND})
     @HttpCode(HttpStatus.CREATED)
-    @Patch('/update/:id')
-    update(@Param('id') id: string, @Body() userUpdateDto: UpdateUserDto): Promise<UserModel> {
-        return this.authUserService.updateUser(Number(id), userUpdateDto);
+    @Patch(':id')
+    update(@Param('id') id: string, @Body() userUpdateDto: UpdateUserDto): Promise<UserType> {
+        return this.userService.updateUser(Number(id), userUpdateDto);
     }
+
 
     @ApiOperation({summary: 'Add position to user'})
+    @CustomOkResponse({status: HttpStatus.CREATED, exampleData: SWAGGER_EXAMPLE_USER_BY_ID})
     @HttpCode(HttpStatus.OK)
-    @Patch('/addPosition/:id')
-    addPosition(@Param('id') id: string, @Body('positionId') positionId: string) {
-        return this.authUserService.addPosition(+id, +positionId)
+    @ApiNotFoundResponse({description: Exception.USER_NOT_FOUND})
+    @Patch(':id/addPosition')
+    addPosition(@Param('id') id: string, @Body('positionId') positionId: string): Promise<UserType> {
+        return this.userService.addPosition(+id, +positionId)
     }
 
+
     @ApiOperation({summary: 'Add car to user'})
+    @CustomOkResponse({status: HttpStatus.CREATED, exampleData: SWAGGER_EXAMPLE_USER_BY_ID})
     @HttpCode(HttpStatus.OK)
-    @Patch('/addCar/:id')
-    addCar(@Param('id') id: string, @Body('carId') carId: string) {
-        return this.authUserService.addCar(+id, +carId)
+    @ApiNotFoundResponse({description: Exception.USER_NOT_FOUND})
+    @Patch(':id/addCar')
+    addCar(@Param('id') id: string, @Body('carId') carId: string): Promise<UserType> {
+        return this.userService.addCar(+id, +carId)
     }
 
 
     @ApiOperation({summary: 'Delete user'})
-    @ApiResponse({status: HttpStatus.NOT_FOUND, description: Exception.USER_NOT_FOUND})
+    @ApiNotFoundResponse({description: Exception.USER_NOT_FOUND})
     @HttpCode(HttpStatus.NO_CONTENT)
     @Delete(':id')
     delete(@Param('id') id: string): Promise<void> {
-        return this.authUserService.deleteUser(Number(id))
+        return this.userService.deleteUser(Number(id))
     }
 
 

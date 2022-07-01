@@ -1,5 +1,5 @@
-import {Car, Fuel_card, Position, Role} from "@prisma/client";
-import { IsNotEmpty, IsOptional, IsString} from "class-validator";
+import {Role} from "@prisma/client";
+import {IsOptional, IsString} from "class-validator";
 import {ApiProperty} from "@nestjs/swagger";
 
 export class UpdateUserDto {
@@ -29,12 +29,10 @@ export class UpdateUserDto {
     @IsOptional()
     public birthday: string;
 
-    @ApiProperty({example: 'qwerty12', description: "Пароль від 8 до 20 символів"})
-    @IsNotEmpty()
-    @IsOptional()
-    public password?: string;
-
-    @ApiProperty({example: '"https://www.gravatar.com/avatar/00000000000000000000000000000000?d=mp&f=y"', description: "Посилання на фото користувача"})
+    @ApiProperty({
+        example: '"https://www.gravatar.com/avatar/00000000000000000000000000000000?d=mp&f=y"',
+        description: "Посилання на фото користувача"
+    })
     @IsString()
     @IsOptional()
     public image?: string;
@@ -43,17 +41,5 @@ export class UpdateUserDto {
     @IsString()
     @IsOptional()
     public role?: Role;
-
-
-    @IsOptional()
-    public position_id?: Position;
-
-
-    @IsOptional()
-    public car?: Car;
-
-    @IsOptional()
-    public fuel_card?: Fuel_card;
-
 
 }

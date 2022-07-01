@@ -1,7 +1,7 @@
 import {NestFactory} from '@nestjs/core';
 import {ValidationPipe} from "@nestjs/common";
 import {DocumentBuilder, SwaggerModule} from '@nestjs/swagger';
-import {PrismaService} from "./_core/prisma.service";
+import {PrismaService} from "./core/prisma.service";
 
 import {AppModule} from './app.module';
 

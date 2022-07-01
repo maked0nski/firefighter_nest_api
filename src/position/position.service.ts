@@ -1,7 +1,7 @@
 import {ForbiddenException, Injectable, NotFoundException} from '@nestjs/common';
-import {PrismaService} from "../_core/prisma.service";
+import {PrismaService} from "../core/prisma.service";
 import {PositionDto} from "./dto";
-import {Exception} from "../_exceptions";
+import {Exception} from "../exceptions";
 import {PrismaClientKnownRequestError} from "@prisma/client/runtime";
 import {Position as PositionModel} from '@prisma/client';
 
@@ -17,7 +17,7 @@ export class PositionService {
             .catch((error) => {
                 if (error instanceof PrismaClientKnownRequestError) {
                     if (error.code === 'P2002') {
-                        throw new ForbiddenException('Credentials incorrect');
+                        throw new ForbiddenException(Exception.FORBIDDEN);
                     }
                 }
                 console.log("position service create error code: ", error.code)
@@ -60,7 +60,7 @@ export class PositionService {
             .catch((error) => {
                 if (error instanceof PrismaClientKnownRequestError) {
                     if (error.code === 'P2002') {
-                        throw new ForbiddenException('Credentials incorrect');
+                        throw new ForbiddenException(Exception.FORBIDDEN);
                     }
                     if (error.code==='P2025'){
                         throw new NotFoundException(Exception.POSITION_NOT_FOUND)
