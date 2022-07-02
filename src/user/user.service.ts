@@ -4,8 +4,7 @@ import {PrismaService} from "../core/prisma.service";
 import {UpdateUserDto} from "./dto";
 import {Exception} from "../exceptions";
 import {PrismaClientKnownRequestError} from "@prisma/client/runtime";
-import {UserType} from "./type/userType";
-import {rejects} from "assert";
+import {UserType} from "./type";
 
 
 @Injectable()
@@ -59,7 +58,7 @@ export class UserService {
                 birthday: true,
                 image: true,
                 role: true,
-                position_id: true,
+                positionId: true,
             }
         });
     }
@@ -76,7 +75,7 @@ export class UserService {
                 birthday: true,
                 image: true,
                 role: true,
-                position_id: true,
+                positionId: true,
                 car: true,
             }
         });
@@ -96,7 +95,7 @@ export class UserService {
                 image: true,
                 role: true,
                 car: true,
-                position_id: true,
+                positionId: true,
                 fuel_card: true
             },
             rejectOnNotFound: true
@@ -133,7 +132,7 @@ export class UserService {
                         image: true,
                         role: true,
                         car: true,
-                        position_id: true,
+                        positionId: true,
                         fuel_card: true
                     }
                 })
@@ -156,11 +155,7 @@ export class UserService {
                 .update({
                     where: {id: userId},
                     data: {
-                        position_id: {
-                            connect: {
-                                id: positionId
-                            }
-                        }
+                        positionId: positionId
                     },
                     select: {
                         id: true,
@@ -173,7 +168,7 @@ export class UserService {
                         image: true,
                         role: true,
                         car: true,
-                        position_id: true,
+                        positionId: true,
                         fuel_card: true
                     }
                 })
@@ -206,7 +201,7 @@ export class UserService {
                         image: true,
                         role: true,
                         car: true,
-                        position_id: true,
+                        positionId: true,
                         fuel_card: true
                     }
                 })

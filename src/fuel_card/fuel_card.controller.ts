@@ -1,7 +1,6 @@
 import {Body, Controller, Delete, Get, HttpCode, HttpStatus, Param, Patch, Post, UseGuards} from '@nestjs/common';
 import {ApiBody, ApiForbiddenResponse, ApiNotFoundResponse, ApiOperation, ApiTags} from "@nestjs/swagger";
 
-import {Fuel_card as Fuel_cardModel} from '@prisma/client';
 import {AtGuard} from "../core/guards";
 import {FuelCardService} from "./fuel_card.service";
 import {CreateFuelCardDto, UpdateFuelCardDto} from "./dto";
@@ -25,7 +24,7 @@ export class FuelCardController {
     @CustomOkResponse({status: HttpStatus.OK, exampleData: SWAGGER_EXAMPLE_ARRAY_FUEL_CARD_LIST})
     @HttpCode(HttpStatus.OK)
     @Get()
-    getAllFuelCards(): Promise<Fuel_cardModel[]> {
+    getAllFuelCards(): Promise<CreateFuelCardDto[]> {
         return this.fuelCardService.getAllFuelCards();
     }
 
@@ -34,7 +33,7 @@ export class FuelCardController {
     @ApiNotFoundResponse({description: Exception.CARD_NOT_FOUND})
     @HttpCode(HttpStatus.OK)
     @Get(':id')
-    getFuelCardById(@Param('id') id: string): Promise<Fuel_cardModel> {
+    getFuelCardById(@Param('id') id: string): Promise<CreateFuelCardDto> {
         return this.fuelCardService.getFuelCardById(Number(id));
     }
 
@@ -43,7 +42,7 @@ export class FuelCardController {
     @ApiForbiddenResponse({description: Exception.FORBIDDEN})
     @HttpCode(HttpStatus.CREATED)
     @Post()
-    createFuelCard(@Body() createFuelCardDto: CreateFuelCardDto): Promise<Fuel_cardModel> {
+    createFuelCard(@Body() createFuelCardDto: CreateFuelCardDto): Promise<CreateFuelCardDto> {
         return this.fuelCardService.createFuelCard(createFuelCardDto);
     }
 
@@ -53,7 +52,7 @@ export class FuelCardController {
     @ApiNotFoundResponse({description: Exception.CARD_NOT_FOUND})
     @HttpCode(HttpStatus.CREATED)
     @Patch(':id')
-    updateFuelCardById(@Param('id') id: string, @Body() updateFuelCardDto: UpdateFuelCardDto): Promise<Fuel_cardModel> {
+    updateFuelCardById(@Param('id') id: string, @Body() updateFuelCardDto: UpdateFuelCardDto): Promise<CreateFuelCardDto> {
         return this.fuelCardService.updateFuelCardById(Number(id), updateFuelCardDto)
     }
 

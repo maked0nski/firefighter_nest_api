@@ -5,4 +5,5 @@ export enum Exception {
     USER_NOT_FOUND = " User with this ID does not found",
     POSITION_NOT_FOUND = " Position with this ID does not found",
     CAR_NOT_FOUND = " Car with this ID does not found",
+    SIM_CARD_NOT_FOUND = " Sim card with this ID does not found",
 }

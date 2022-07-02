@@ -1,11 +1,3 @@
-// Моя схема звязків
-// https://drawsql.app/pozservice/diagrams/fire-service#
-// DATABASE_URL="mysql://root:rootroot@localhost:3306/firefighter_nest"
-// npx prisma generate // синхронізація схеми з базою
-// npx prisma migrate dev --name change_post_table --create-only  // add new column to db
-// npx prisma migrate dev --name init
-// prisma format  // check
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -15,141 +7,139 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-// Працівник фірми
 model User {
   id            Int         @id @default(autoincrement())
   createdAt     DateTime    @default(now()) @db.Timestamp(6)
   updatedAt     DateTime    @updatedAt
-  surename      String? // Прізвище
-  name          String? // Імя
-  fathersname   String? // По батькові
-  phone         String?     @unique // Телефон
+  surename      String?
+  name          String?
+  fathersname   String?
+  phone         String?     @unique
   email         String      @unique
   birthday      String?
   password      String
   image         String?     @default("https://www.gravatar.com/avatar/00000000000000000000000000000000?d=mp&f=y")
-  role          String      @default("USER")
-  position_id   Position?   @relation(fields: [positionId], references: [id])
-  car           Car?
-  fuel_card     Fuel_card[]
+  role          Role        @default(USER)
   refresh_token String?     @db.VarChar(500)
   positionId    Int?
+  position      position?   @relation("positionTousers", fields: [positionId], references: [id])
+  car           car?        @relation("carTousers")
+  fuel_card     fuel_card[] @relation("fuel_cardTousers")
 
   @@index([email])
-  @@map(name: "users")
+  @@index([positionId], map: "users_positionId_fkey")
+  @@map("users")
 }
 
-// Посада на фірмі
-model Position {
-  id       Int    @id @default(autoincrement())
-  position String // Посада на роботі
-  user     User[] // Спикок працівників
-}
-
-// Службові автомобілі
-model Car {
+model car {
   id           Int    @id @default(autoincrement())
-  vin          String // Він номер машини
-  model        String // Модель машини
-  fuel         String // На якому паливі
-  year         String // рік випуску авто
-  passport_car String // Номер техпаспорта авто
-  oddometr     Int // Показник оддометра авто (скільки проїхав км)
-  insurance    String // дата страховки авто
-  user         User?  @relation(fields: [userId], references: [id]) // За ким закріплене авто
-  userId       Int?   @unique
+  vin          String
+  model        String
+  fuel         String
+  year         String
+  passport_car String
+  oddometr     Int
+  insurance    String
+  userId       Int?   @unique(map: "Car_userId_key")
+  users        User?  @relation("carTousers", fields: [userId], references: [id], map: "Car_userId_fkey")
 }
 
-// Паливні картки від АЗС
-model Fuel_card {
+model client {
+  id                          Int                          @id @default(autoincrement())
+  name                        String?
+  city                        String?
+  adress                      String?
+  coordinate                  String?
+  service_contract            String?
+  contact_person              contact_person[]
+  fire_extinguishers          fire_extinguishers[]
+  fire_hydrant                fire_hydrant[]
+  fire_resistant_impregnation fire_resistant_impregnation?
+}
+
+model contact_person {
+  id          Int     @id @default(autoincrement())
+  surename    String?
+  name        String?
+  fathersname String?
+  phone       String? @unique(map: "Contact_person_phone_key")
+  position    String?
+  email       String? @unique(map: "Contact_person_email_key")
+  firmId      Int?
+  client      client? @relation(fields: [firmId], references: [id], map: "Contact_person_firmId_fkey")
+
+  @@index([firmId], map: "Contact_person_firmId_fkey")
+}
+
+model fire_extinguishers {
+  id         Int     @id @default(autoincrement())
+  reminding  Boolean @default(true)
+  model      String
+  quantity   Int
+  next_check String
+  firmId     Int?
+  client     client? @relation(fields: [firmId], references: [id], map: "Fire_extinguishers_firmId_fkey")
+
+  @@index([firmId], map: "Fire_extinguishers_firmId_fkey")
+}
+
+model fire_hydrant {
+  id         Int     @id @default(autoincrement())
+  reminding  Boolean @default(true)
+  quantity   Int
+  next_check String
+  firmId     Int?
+  client     client? @relation(fields: [firmId], references: [id], map: "Fire_hydrant_firmId_fkey")
+
+  @@index([firmId], map: "Fire_hydrant_firmId_fkey")
+}
+
+model fire_resistant_impregnation {
+  id             Int     @id @default(autoincrement())
+  reminding      Boolean @default(true)
+  seepage_liquid String
+  area           Int
+  next_check     String
+  firmId         Int?    @unique(map: "Fire_resistant_impregnation_firmId_key")
+  client         client? @relation(fields: [firmId], references: [id], map: "Fire_resistant_impregnation_firmId_fkey")
+}
+
+model fuel_card {
   id            Int     @id @default(autoincrement())
   number        String
   pin           String
   active        Boolean @default(true)
   station_brend String  @default("OKKO")
-  users         User?   @relation(fields: [userId], references: [id])
   userId        Int?
+  users         User?   @relation("fuel_cardTousers", fields: [userId], references: [id], map: "Fuel_card_userId_fkey")
+
+  @@index([userId], map: "Fuel_card_userId_fkey")
 }
 
-// Список сім карт для цілодобового спостереження
-model Sim_card {
-  id            Int          @id @default(autoincrement())
-  number        String       @unique // Номер карточки
-  operator      String       @default("kyivstar") // Оператор
-  active        Boolean      @default(true) // Статус карточки
-  observation   Observation? @relation(fields: [observationId], references: [id]) // На якому обєкті
-  observationId Int?         @unique
-}
-
-//Організація Клієнта
-model Client {
-  id                          Int                          @id @default(autoincrement())
-  name                        String? // Назва Організації
-  city                        String? // Область, місто / село
-  adress                      String? // Адреса
-  coordinate                  String? // Координати 48.932706, 24.742672    48°55'57.7"N+24°44'34.1"E  https://www.google.com/maps/place/48°55'57.7"N+24°44'34.1"E
-  contact                     Contact_person[] // Контактні особи
-  service_contract            String? // Данні про технічне обслуговування договір № та від дата
-  fire_extinguishers          Fire_extinguishers[] // Данні про вогнегасники
-  fire_hydrant                Fire_hydrant[] // Данні про пожежні гідранти
-  fire_resistant_impregnation Fire_resistant_impregnation? // Данні про просечення конструкції вогнетривким розчином
-}
-
-//Контактні особи
-model Contact_person {
-  id           Int     @id @default(autoincrement())
-  surename     String? // Прізвище
-  name         String? // Імя
-  fathersname  String? // По батькові
-  phone        String? @unique // Телефон
-  position     String? // Посада
-  email        String? @unique // Email
-  organisation Client? @relation(fields: [firmId], references: [id]) // звязок з Фірмою
-  firmId       Int?
-}
-
-// Данні про цілодобове пожежне спостереження
-model Observation {
+model observation {
   id       Int       @id @default(autoincrement())
-  number   Int // Під яким номером на пульті цілодобового спостереження
-  contract String? // договір № та від дата
-  sim      Sim_card?
+  number   Int
+  contract String?
+  sim_card sim_card?
 }
 
-// Данні про технічне обслуговування
-// model Servce {
-//    id              Int         @id @default(autoincrement())
-//    service_contract        Srting                  // договір № та від дата
-// }
-
-// Данні про пожежні гідранти
-model Fire_hydrant {
-  id           Int     @id @default(autoincrement())
-  reminding    Boolean @default(true) // Нагадувати про подію?
-  quantity     Int
-  next_check   String // дата наступної перевірки
-  organisation Client? @relation(fields: [firmId], references: [id]) // звязок з Фірмою
-  firmId       Int?
+model position {
+  id       Int    @id @default(autoincrement())
+  position String
+  users    User[] @relation("positionTousers")
 }
 
-// Данні про вогнегасники
-model Fire_extinguishers {
-  id           Int     @id @default(autoincrement())
-  reminding    Boolean @default(true) // Нагадувати про подію?
-  model        String
-  quantity     Int
-  next_check   String // дата наступної перевірки
-  organisation Client? @relation(fields: [firmId], references: [id]) // звязок з Фірмою
-  firmId       Int?
+model sim_card {
+  id            Int          @id @default(autoincrement())
+  number        String       @unique(map: "Sim_card_number_key")
+  operator      String       @default("kyivstar")
+  active        Boolean      @default(true)
+  observationId Int?         @unique(map: "Sim_card_observationId_key")
+  observation   observation? @relation(fields: [observationId], references: [id], map: "Sim_card_observationId_fkey")
 }
 
-// Данні про просечення конструкції вогнетривким розчином
-model Fire_resistant_impregnation {
-  id             Int     @id @default(autoincrement())
-  reminding      Boolean @default(true) // Нагадувати про подію?
-  seepage_liquid String // Назва просочувальної рідини
-  area           Int // Площа просочувальної поверхні
-  next_check     String // дата наступної обробки
-  organisation   Client? @relation(fields: [firmId], references: [id]) // звязок з Фірмою
-  firmId         Int?    @unique
+enum Role {
+  USER
+  ADMIN
+  ROOT
 }

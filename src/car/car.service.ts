@@ -1,7 +1,6 @@
 import {ForbiddenException, HttpException, HttpStatus, Injectable, NotFoundException} from '@nestjs/common';
 import {CreateCarDto} from "./dto/create.car.dto";
 import {PrismaService} from "../core/prisma.service";
-import {Car as CarModel} from "@prisma/client";
 import {Exception} from "../exceptions";
 import {PrismaClientKnownRequestError} from "@prisma/client/runtime";
 import {UpdateCarDto} from "./dto/update.car.dto";
@@ -12,7 +11,7 @@ export class CarService {
     constructor(private readonly prismaService: PrismaService) {
     }
 
-    async create(carDto: CreateCarDto): Promise<CarModel> {
+    async create(carDto: CreateCarDto): Promise<CreateCarDto> {
         try {
             return await this.prismaService.car
                 .create({
@@ -26,7 +25,7 @@ export class CarService {
         }
     }
 
-    async getAll(): Promise<CarModel[]> {
+    async getAll(): Promise<CreateCarDto[]> {
         try {
             return await this.prismaService.car.findMany();
         } catch (error) {
@@ -34,7 +33,7 @@ export class CarService {
         }
     }
 
-    async getById(id: number): Promise<CarModel> {
+    async getById(id: number): Promise<CreateCarDto> {
         try {
             return await this.prismaService.car
                 .findFirst({
@@ -49,7 +48,7 @@ export class CarService {
         }
     };
 
-    async update(id: number, car: Partial<UpdateCarDto>): Promise<CarModel> {
+    async update(id: number, car: Partial<UpdateCarDto>): Promise<CreateCarDto> {
         try {
             return await this.prismaService.car
                 .update({

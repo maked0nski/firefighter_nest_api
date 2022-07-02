@@ -1,6 +1,5 @@
 import {Body, Controller, Delete, Get, HttpCode, HttpStatus, Param, Patch, Post, UseGuards} from '@nestjs/common';
 import {ApiForbiddenResponse, ApiNotFoundResponse, ApiOperation, ApiTags} from "@nestjs/swagger";
-import {Car as CarModel} from '@prisma/client';
 import {AtGuard} from "../core/guards";
 import {CarService} from "./car.service";
 import {CreateCarDto} from "./dto/create.car.dto";
@@ -24,7 +23,7 @@ export class CarController {
     @CustomOkResponse({status: HttpStatus.CREATED, exampleData: SWAGGER_EXAMPLE_CAR})
     @HttpCode(HttpStatus.CREATED)
     @Post('')
-    createCar(@Body() carDto: CreateCarDto): Promise<CarModel> {
+    createCar(@Body() carDto: CreateCarDto): Promise<CreateCarDto> {
         return this.carService.create(carDto)
     }
 
@@ -32,7 +31,7 @@ export class CarController {
     @CustomOkResponse({status: HttpStatus.OK, exampleData: SWAGGER_EXAMPLE_CARS_LIST})
     @HttpCode(HttpStatus.OK)
     @Get()
-    getAll(): Promise<CarModel[]> {
+    getAll(): Promise<CreateCarDto[]> {
         return this.carService.getAll();
     }
 
@@ -42,7 +41,7 @@ export class CarController {
     @ApiNotFoundResponse({description: Exception.CAR_NOT_FOUND})
     @HttpCode(HttpStatus.OK)
     @Get(':id')
-    getById(@Param('id') id: string): Promise<CarModel> {
+    getById(@Param('id') id: string): Promise<CreateCarDto> {
         return this.carService.getById(Number(id));
     }
 

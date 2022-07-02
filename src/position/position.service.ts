@@ -3,7 +3,6 @@ import {PrismaService} from "../core/prisma.service";
 import {PositionDto} from "./dto";
 import {Exception} from "../exceptions";
 import {PrismaClientKnownRequestError} from "@prisma/client/runtime";
-import {Position as PositionModel} from '@prisma/client';
 
 @Injectable()
 export class PositionService {
@@ -12,7 +11,7 @@ export class PositionService {
     }
 
 
-    async create(data: PositionDto): Promise<PositionModel> {
+    async create(data: PositionDto): Promise<PositionDto> {
         try {
             return await this.prismaService.position.create({data})
         } catch (error) {
@@ -24,7 +23,7 @@ export class PositionService {
     }
 
 
-    async getAll(): Promise<PositionModel[]> {
+    async getAll(): Promise<PositionDto[]> {
         try {
             return await this.prismaService.position.findMany();
         } catch (error) {
@@ -34,7 +33,7 @@ export class PositionService {
     }
 
 
-    async getById(id: number): Promise<PositionModel> {
+    async getById(id: number): Promise<PositionDto> {
         try {
             return await this.prismaService.position.findUnique({
                 where: {
@@ -51,7 +50,7 @@ export class PositionService {
     }
 
 
-    async update(id: number, data: PositionDto): Promise<PositionModel> {
+    async update(id: number, data: PositionDto): Promise<PositionDto> {
         try {
             return await this.prismaService.position
                 .update({
