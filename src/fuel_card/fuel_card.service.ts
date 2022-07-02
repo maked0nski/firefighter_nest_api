@@ -85,4 +85,18 @@ export class FuelCardService {
             throw new HttpException(error.message, HttpStatus.BAD_REQUEST);
         }
     }
+
+    async addUser(id: number, userId: number) {
+        try {
+            return await this.prismaService.fuel_card
+                .update({
+                    where: {id: Number(id)},
+                    data: {
+                        userId: userId
+                    }
+                })
+        } catch (error) {
+            throw new HttpException(error.message, HttpStatus.BAD_REQUEST);
+        }
+    }
 }

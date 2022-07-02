@@ -8,6 +8,7 @@ import {AtGuard} from "./core/guards";
 import { FuelCardModule } from './fuel_card/fuel_card.module';
 import { PositionModule } from './position/position.module';
 import { CarModule } from './car/car.module';
+import { SimCardModule } from './sim_card/sim_card.module';
 
 @Module({
     imports: [
@@ -20,6 +21,7 @@ import { CarModule } from './car/car.module';
         FuelCardModule,
         PositionModule,
         CarModule,
+        SimCardModule,
     ],
     providers: [
         {

@@ -1,6 +1,10 @@
 // Моя схема звязків
 // https://drawsql.app/pozservice/diagrams/fire-service#
 // DATABASE_URL="mysql://root:rootroot@localhost:3306/firefighter_nest"
+// npx prisma generate // синхронізація схеми з базою
+// npx prisma migrate dev --name change_post_table --create-only  // add new column to db
+// npx prisma migrate dev --name init
+// prisma format  // check
 
 generator client {
   provider = "prisma-client-js"
@@ -11,6 +15,7 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+// Працівник фірми
 model User {
   id            Int         @id @default(autoincrement())
   createdAt     DateTime    @default(now()) @db.Timestamp(6)
@@ -23,7 +28,7 @@ model User {
   birthday      String?
   password      String
   image         String?     @default("https://www.gravatar.com/avatar/00000000000000000000000000000000?d=mp&f=y")
-  role          Role        @default(USER)
+  role          String      @default("USER")
   position_id   Position?   @relation(fields: [positionId], references: [id])
   car           Car?
   fuel_card     Fuel_card[]
@@ -34,12 +39,14 @@ model User {
   @@map(name: "users")
 }
 
+// Посада на фірмі
 model Position {
   id       Int    @id @default(autoincrement())
   position String // Посада на роботі
   user     User[] // Спикок працівників
 }
 
+// Службові автомобілі
 model Car {
   id           Int    @id @default(autoincrement())
   vin          String // Він номер машини
@@ -53,6 +60,7 @@ model Car {
   userId       Int?   @unique
 }
 
+// Паливні картки від АЗС
 model Fuel_card {
   id            Int     @id @default(autoincrement())
   number        String
@@ -63,8 +71,85 @@ model Fuel_card {
   userId        Int?
 }
 
-enum Role {
-  USER
-  ADMIN
-  ROOT
+// Список сім карт для цілодобового спостереження
+model Sim_card {
+  id            Int          @id @default(autoincrement())
+  number        String       @unique // Номер карточки
+  operator      String       @default("kyivstar") // Оператор
+  active        Boolean      @default(true) // Статус карточки
+  observation   Observation? @relation(fields: [observationId], references: [id]) // На якому обєкті
+  observationId Int?         @unique
+}
+
+//Організація Клієнта
+model Client {
+  id                          Int                          @id @default(autoincrement())
+  name                        String? // Назва Організації
+  city                        String? // Область, місто / село
+  adress                      String? // Адреса
+  coordinate                  String? // Координати 48.932706, 24.742672    48°55'57.7"N+24°44'34.1"E  https://www.google.com/maps/place/48°55'57.7"N+24°44'34.1"E
+  contact                     Contact_person[] // Контактні особи
+  service_contract            String? // Данні про технічне обслуговування договір № та від дата
+  fire_extinguishers          Fire_extinguishers[] // Данні про вогнегасники
+  fire_hydrant                Fire_hydrant[] // Данні про пожежні гідранти
+  fire_resistant_impregnation Fire_resistant_impregnation? // Данні про просечення конструкції вогнетривким розчином
+}
+
+//Контактні особи
+model Contact_person {
+  id           Int     @id @default(autoincrement())
+  surename     String? // Прізвище
+  name         String? // Імя
+  fathersname  String? // По батькові
+  phone        String? @unique // Телефон
+  position     String? // Посада
+  email        String? @unique // Email
+  organisation Client? @relation(fields: [firmId], references: [id]) // звязок з Фірмою
+  firmId       Int?
+}
+
+// Данні про цілодобове пожежне спостереження
+model Observation {
+  id       Int       @id @default(autoincrement())
+  number   Int // Під яким номером на пульті цілодобового спостереження
+  contract String? // договір № та від дата
+  sim      Sim_card?
+}
+
+// Данні про технічне обслуговування
+// model Servce {
+//    id              Int         @id @default(autoincrement())
+//    service_contract        Srting                  // договір № та від дата
+// }
+
+// Данні про пожежні гідранти
+model Fire_hydrant {
+  id           Int     @id @default(autoincrement())
+  reminding    Boolean @default(true) // Нагадувати про подію?
+  quantity     Int
+  next_check   String // дата наступної перевірки
+  organisation Client? @relation(fields: [firmId], references: [id]) // звязок з Фірмою
+  firmId       Int?
+}
+
+// Данні про вогнегасники
+model Fire_extinguishers {
+  id           Int     @id @default(autoincrement())
+  reminding    Boolean @default(true) // Нагадувати про подію?
+  model        String
+  quantity     Int
+  next_check   String // дата наступної перевірки
+  organisation Client? @relation(fields: [firmId], references: [id]) // звязок з Фірмою
+  firmId       Int?
+}
+
+// Данні про просечення конструкції вогнетривким розчином
+model Fire_resistant_impregnation {
+  id             Int     @id @default(autoincrement())
+  reminding      Boolean @default(true) // Нагадувати про подію?
+  seepage_liquid String // Назва просочувальної рідини
+  area           Int // Площа просочувальної поверхні
+  next_check     String // дата наступної обробки
+  organisation   Client? @relation(fields: [firmId], references: [id]) // звязок з Фірмою
+  firmId         Int?    @unique
 }

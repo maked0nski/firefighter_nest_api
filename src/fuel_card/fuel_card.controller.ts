@@ -1,5 +1,5 @@
 import {Body, Controller, Delete, Get, HttpCode, HttpStatus, Param, Patch, Post, UseGuards} from '@nestjs/common';
-import {ApiForbiddenResponse, ApiNotFoundResponse, ApiOperation, ApiTags} from "@nestjs/swagger";
+import {ApiBody, ApiForbiddenResponse, ApiNotFoundResponse, ApiOperation, ApiTags} from "@nestjs/swagger";
 
 import {Fuel_card as Fuel_cardModel} from '@prisma/client';
 import {AtGuard} from "../core/guards";
@@ -11,7 +11,6 @@ import {
     SWAGGER_EXAMPLE_ONE_FUEL_CARD
 } from "../utils/example";
 import {Exception} from "../exceptions";
-
 
 @ApiTags('Fuel cards')
 @Controller('fuel_card')
@@ -56,6 +55,23 @@ export class FuelCardController {
     @Patch(':id')
     updateFuelCardById(@Param('id') id: string, @Body() updateFuelCardDto: UpdateFuelCardDto): Promise<Fuel_cardModel> {
         return this.fuelCardService.updateFuelCardById(Number(id), updateFuelCardDto)
+    }
+
+    @ApiOperation({summary: 'Add car to user'})
+    @ApiBody({
+        description: "User id or null", schema: {
+            example: {
+                userId: "2"
+            }
+        }
+    })
+    @CustomOkResponse({status: HttpStatus.CREATED, exampleData: SWAGGER_EXAMPLE_ONE_FUEL_CARD})
+    @HttpCode(HttpStatus.OK)
+    @ApiNotFoundResponse({description: Exception.USER_NOT_FOUND})
+    @Patch(':id/addUser')
+    addUser(@Param('id') id: string, @Body('userId') userId: string | null) {
+        if (userId === null) return this.fuelCardService.addUser(Number(id), null)
+        return this.fuelCardService.addUser(Number(id), Number(userId))
     }
 
     @ApiOperation({summary: 'Delete fuel card by id'})
