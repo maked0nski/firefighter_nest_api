@@ -6,3 +6,6 @@ export * from './swagger-sim-card-example.list';
 export * from './swagger-observation-example.list';
 export * from './swagger-fire-hydrant-example.list';
 export * from './swagger-fire-resistant-impregnation-example.list';
+export * from './swagger-fire-extinguishers-example.list';
+export * from './swagger.contact.person.example.list';
+export * from './swagger.client.example.list';

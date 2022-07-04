@@ -1,15 +1,15 @@
 import {Body, Controller, Delete, Get, HttpCode, HttpStatus, Param, Patch, Post, UseGuards} from '@nestjs/common';
 import {ApiBody, ApiForbiddenResponse, ApiNotFoundResponse, ApiOperation, ApiParam, ApiTags} from "@nestjs/swagger";
+
 import {AtGuard} from "../core/guards";
 import {FireResistantImpregnationService} from "./fire_resistant_impregnation.service";
 import {Exception} from "../exceptions";
 import {CustomOkResponse} from "../utils";
 import {
-    SWAGGER_EXAMPLE_FIRE_RESISTANT,
-    SWAGGER_EXAMPLE_FIRE_RESISTANT_IMPREGNATION
+    SWAGGER_EXAMPLE_FIRE_RESISTANT_BODY,
+    SWAGGER_EXAMPLE_FIRE_RESISTANT
 } from "../utils/example";
-import {CreateFireResistantImpregnationDto} from "./dto/create.fire.resistant.impregnation.dto";
-import {UpdateFireResistantImpregnationDto} from "./dto/update.fire.resistant.impregnation.dto";
+import {CreateFireResistantImpregnationDto,UpdateFireResistantImpregnationDto} from "./dto";
 
 @ApiTags('Просочення конструкцій вогнетривкою речовиною')
 @Controller('fire-resistant-impregnation')
@@ -20,11 +20,11 @@ export class FireResistantImpregnationController {
 
     @ApiOperation({summary: 'Create task fire resistant impregnation'})
     @ApiForbiddenResponse({description: Exception.FORBIDDEN})
-    @CustomOkResponse({status: HttpStatus.CREATED, exampleData: SWAGGER_EXAMPLE_FIRE_RESISTANT_IMPREGNATION})
+    @CustomOkResponse({status: HttpStatus.CREATED, exampleData: SWAGGER_EXAMPLE_FIRE_RESISTANT})
     @ApiBody({
         description: "Example body",
         schema: {
-            example: SWAGGER_EXAMPLE_FIRE_RESISTANT
+            example: SWAGGER_EXAMPLE_FIRE_RESISTANT_BODY
         },
         required: true
     })
@@ -37,7 +37,7 @@ export class FireResistantImpregnationController {
 
     @ApiOperation({summary: 'Get fire resistant impregnation by id'})
     @ApiForbiddenResponse({description: Exception.FORBIDDEN})
-    @CustomOkResponse({status: HttpStatus.OK, exampleData: SWAGGER_EXAMPLE_FIRE_RESISTANT_IMPREGNATION})
+    @CustomOkResponse({status: HttpStatus.OK, exampleData: SWAGGER_EXAMPLE_FIRE_RESISTANT})
     @HttpCode(HttpStatus.OK)
     @Get('id')
     getById(@Param('id') id: string): Promise<CreateFireResistantImpregnationDto> {
@@ -45,11 +45,11 @@ export class FireResistantImpregnationController {
     }
 
     @ApiOperation({summary: 'Update fire resistant impregnation by id'})
-    @CustomOkResponse({status: HttpStatus.CREATED, exampleData: SWAGGER_EXAMPLE_FIRE_RESISTANT_IMPREGNATION})
+    @CustomOkResponse({status: HttpStatus.CREATED, exampleData: SWAGGER_EXAMPLE_FIRE_RESISTANT})
     @ApiBody({
         description: "Example body",
         schema: {
-            example: SWAGGER_EXAMPLE_FIRE_RESISTANT
+            example: SWAGGER_EXAMPLE_FIRE_RESISTANT_BODY
         },
         required: false
     })
@@ -63,7 +63,7 @@ export class FireResistantImpregnationController {
     }
 
     @ApiOperation({summary: 'Addfirm to fire resistant impregnation by id'})
-    @CustomOkResponse({status: HttpStatus.CREATED, exampleData: SWAGGER_EXAMPLE_FIRE_RESISTANT_IMPREGNATION})
+    @CustomOkResponse({status: HttpStatus.CREATED, exampleData: SWAGGER_EXAMPLE_FIRE_RESISTANT})
     @ApiBody({
         description: "Example body",
         schema: {
@@ -85,7 +85,7 @@ export class FireResistantImpregnationController {
     @ApiOperation({
         summary: "Remove firmId from fire resistant impregnation"
     })
-    @CustomOkResponse({status: HttpStatus.CREATED, exampleData: SWAGGER_EXAMPLE_FIRE_RESISTANT_IMPREGNATION})
+    @CustomOkResponse({status: HttpStatus.CREATED, exampleData: SWAGGER_EXAMPLE_FIRE_RESISTANT})
     @HttpCode(HttpStatus.OK)
     @ApiNotFoundResponse({description: Exception.FIRE_RESISTANT_IMPREGNATION_NOT_FOUND})
     @Patch(':id/deleteFirm')

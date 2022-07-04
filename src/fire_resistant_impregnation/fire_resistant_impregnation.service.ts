@@ -1,9 +1,8 @@
 import {ForbiddenException, HttpException, HttpStatus, Injectable, NotFoundException} from '@nestjs/common';
-import {CreateFireResistantImpregnationDto} from "./dto/create.fire.resistant.impregnation.dto";
 import {PrismaService} from "../core/prisma.service";
 import {PrismaClientKnownRequestError} from "@prisma/client/runtime";
 import {Exception} from "../exceptions";
-import {UpdateFireResistantImpregnationDto} from "./dto/update.fire.resistant.impregnation.dto";
+import {CreateFireResistantImpregnationDto, UpdateFireResistantImpregnationDto} from "./dto";
 
 @Injectable()
 export class FireResistantImpregnationService {
@@ -27,7 +26,6 @@ export class FireResistantImpregnationService {
                     }
                 }
                 throw new HttpException(error.message, HttpStatus.BAD_REQUEST);
-
             })
     }
 
