@@ -24,7 +24,7 @@ import {
     SWAGGER_EXAMPLE_USERS_LIST_WITH_POSITION,
 } from "../utils/example";
 import {Exception} from "../exceptions";
-import {UserType} from "./type/userType";
+import {UserType} from "./type";
 
 
 @ApiTags('Users')
@@ -88,13 +88,22 @@ export class UserController {
     }
 
 
-    @ApiOperation({summary: 'Add position to user'})
+    @ApiOperation({summary: 'Add user position'})
     @CustomOkResponse({status: HttpStatus.CREATED, exampleData: SWAGGER_EXAMPLE_USER_BY_ID})
     @HttpCode(HttpStatus.OK)
     @ApiNotFoundResponse({description: Exception.USER_NOT_FOUND})
     @Patch(':id/addPosition')
     addPosition(@Param('id') id: string, @Body('positionId') positionId: string): Promise<UserType> {
-        return this.userService.addPosition(+id, +positionId)
+        return this.userService.addPosition(Number(id), Number(positionId))
+    }
+
+    @ApiOperation({summary: 'Delete user position'})
+    @CustomOkResponse({status: HttpStatus.CREATED, exampleData: SWAGGER_EXAMPLE_USER_BY_ID})
+    @HttpCode(HttpStatus.OK)
+    @ApiNotFoundResponse({description: Exception.USER_NOT_FOUND})
+    @Patch(':id/deletePosition')
+    deletePosition(@Param('id') id: string): Promise<UserType> {
+        return this.userService.deletePosition(Number(id))
     }
 
 
@@ -104,9 +113,17 @@ export class UserController {
     @ApiNotFoundResponse({description: Exception.USER_NOT_FOUND})
     @Patch(':id/addCar')
     addCar(@Param('id') id: string, @Body('carId') carId: string): Promise<UserType> {
-        return this.userService.addCar(+id, +carId)
+        return this.userService.addCar(Number(id), Number(carId))
     }
 
+    @ApiOperation({summary: 'Remove car from user'})
+    @CustomOkResponse({status: HttpStatus.CREATED, exampleData: SWAGGER_EXAMPLE_USER_BY_ID})
+    @HttpCode(HttpStatus.OK)
+    @ApiNotFoundResponse({description: Exception.USER_NOT_FOUND})
+    @Patch(':id/deleteCar')
+    deleteCar(@Param('id') id: string): Promise<UserType> {
+        return this.userService.deleteCar(Number(id))
+    }
 
     @ApiOperation({summary: 'Delete user'})
     @ApiNotFoundResponse({description: Exception.USER_NOT_FOUND})

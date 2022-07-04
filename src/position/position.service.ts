@@ -11,78 +11,79 @@ export class PositionService {
     }
 
 
-    async create(data: PositionDto): Promise<PositionDto> {
-        try {
-            return await this.prismaService.position.create({data})
-        } catch (error) {
-            if (error instanceof PrismaClientKnownRequestError && error.code === 'P2002') {
-                throw new ForbiddenException(Exception.FORBIDDEN);
-            }
-            throw new HttpException(error.message, HttpStatus.BAD_REQUEST);
-        }
-    }
-
-
-    async getAll(): Promise<PositionDto[]> {
-        try {
-            return await this.prismaService.position.findMany();
-        } catch (error) {
-            throw new HttpException(error.message, HttpStatus.BAD_REQUEST);
-        }
-
-    }
-
-
-    async getById(id: number): Promise<PositionDto> {
-        try {
-            return await this.prismaService.position.findUnique({
-                where: {
-                    id
-                },
-                rejectOnNotFound: true
+    create(data: PositionDto): Promise<PositionDto> {
+        return Promise
+            .resolve(this.prismaService.position
+                .create({data}))
+            .catch((error) => {
+                if (error instanceof PrismaClientKnownRequestError && error.code === 'P2002') {
+                    throw new ForbiddenException(Exception.FORBIDDEN);
+                }
+                throw new HttpException(error.message, HttpStatus.BAD_REQUEST);
             })
-        } catch (error) {
-            if (error instanceof PrismaClientKnownRequestError && error.code === 'P2025') {
-                throw new NotFoundException(Exception.POSITION_NOT_FOUND)
-            }
-            throw new HttpException(error.message, HttpStatus.BAD_REQUEST);
-        }
     }
 
 
-    async update(id: number, data: PositionDto): Promise<PositionDto> {
-        try {
-            return await this.prismaService.position
+    getAll(): Promise<PositionDto[]> {
+        return Promise
+            .resolve(this.prismaService.position
+                .findMany())
+            .catch((error) => {
+                throw new HttpException(error.message, HttpStatus.BAD_REQUEST);
+            })
+
+    }
+
+
+    getById(id: number): Promise<PositionDto> {
+        return Promise.resolve(this.prismaService.position.findUnique({
+            where: {
+                id
+            },
+            rejectOnNotFound: true
+        }))
+            .catch((error) => {
+                if (error instanceof PrismaClientKnownRequestError && error.code === 'P2025') {
+                    throw new NotFoundException(Exception.POSITION_NOT_FOUND)
+                }
+                throw new HttpException(error.message, HttpStatus.BAD_REQUEST);
+            })
+    }
+
+
+    update(id: number, data: PositionDto): Promise<PositionDto> {
+        return Promise
+            .resolve(this.prismaService.position
                 .update({
                     where: {id},
                     data
-                })
-        } catch (error) {
-            if (error instanceof PrismaClientKnownRequestError) {
-                if (error.code === 'P2002') {
-                    throw new ForbiddenException(Exception.FORBIDDEN);
+                }))
+            .catch((error) => {
+                if (error instanceof PrismaClientKnownRequestError) {
+                    if (error.code === 'P2002') {
+                        throw new ForbiddenException(Exception.FORBIDDEN);
+                    }
+                    if (error.code === 'P2025') {
+                        throw new NotFoundException(Exception.POSITION_NOT_FOUND)
+                    }
                 }
-                if (error.code === 'P2025') {
-                    throw new NotFoundException(Exception.POSITION_NOT_FOUND)
-                }
-            }
-            throw new HttpException(error.message, HttpStatus.BAD_REQUEST);
-        }
+                throw new HttpException(error.message, HttpStatus.BAD_REQUEST);
+            })
     }
 
 
-    async delete(id: number): Promise<void> {
-        try {
-            await this.prismaService.position
+    delete(id: number): Promise<PositionDto> {
+        return Promise
+            .resolve(this.prismaService.position
                 .delete({
                     where: {id}
-                })
-        } catch (error) {
-            if (error instanceof PrismaClientKnownRequestError && error.code === 'P2025') {
-                throw new NotFoundException(Exception.POSITION_NOT_FOUND)
-            }
-            throw new HttpException(error.message, HttpStatus.BAD_REQUEST);
-        }
+                }))
+            .catch((error) => {
+                if (error instanceof PrismaClientKnownRequestError && error.code === 'P2025') {
+                    throw new NotFoundException(Exception.POSITION_NOT_FOUND)
+                }
+                throw new HttpException(error.message, HttpStatus.BAD_REQUEST);
+            })
     }
 }
 

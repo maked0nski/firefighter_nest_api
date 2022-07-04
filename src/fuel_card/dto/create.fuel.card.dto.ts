@@ -19,7 +19,7 @@ export class CreateFuelCardDto {
     @IsNotEmpty()
     public active: boolean;
 
-    @ApiProperty({example: 'OKKO', description: "Яка заправка OKKO чи WOG"})
+    @ApiProperty({example: 'OKKO', description: "Яка заправка OKKO чи WOG", required:false})
     @IsString()
     @IsEnum(Station_brend)
     @IsOptional()

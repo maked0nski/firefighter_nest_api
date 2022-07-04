@@ -1,15 +1,18 @@
 import {ApiProperty} from "@nestjs/swagger";
 import {IsBoolean, IsEnum, IsNotEmpty, IsOptional, IsString, Length} from "class-validator";
-import {OperatorEnum} from "../type";
+import {OperatorEnum} from "../enum";
 
 export class CreateSimCardDto {
 
-    @ApiProperty({example: '(050) 11 22 333', description: 'Номер тенефона сім карти'})
+    @ApiProperty({example: '(050) 11 22 333', description: 'Номер тенефона сім карти 15 символів'})
     @IsString()
-    @Length(15,15)
+    @Length(15, 15)
     public number: string;
 
-    @ApiProperty({example: 'Kyivstar', description: "Вказати мобільного оператора enum = Kyivstar, Vodafone. По замовчуванню Kyivstar"})
+    @ApiProperty({
+        example: 'Kyivstar',
+        description: "Вказати мобільного оператора enum = Kyivstar, Vodafone. По замовчуванню Kyivstar"
+    })
     @IsString()
     @IsEnum(OperatorEnum)
     @IsOptional()

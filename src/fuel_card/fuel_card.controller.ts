@@ -58,7 +58,7 @@ export class FuelCardController {
 
     @ApiOperation({summary: 'Add car to user'})
     @ApiBody({
-        description: "User id or null", schema: {
+        description: "User id", schema: {
             example: {
                 userId: "2"
             }
@@ -68,16 +68,24 @@ export class FuelCardController {
     @HttpCode(HttpStatus.OK)
     @ApiNotFoundResponse({description: Exception.USER_NOT_FOUND})
     @Patch(':id/addUser')
-    addUser(@Param('id') id: string, @Body('userId') userId: string | null) {
-        if (userId === null) return this.fuelCardService.addUser(Number(id), null)
+    addUser(@Param('id') id: string, @Body('userId') userId: string): Promise<CreateFuelCardDto> {
         return this.fuelCardService.addUser(Number(id), Number(userId))
+    }
+
+    @ApiOperation({summary: 'Remove car from user'})
+    @CustomOkResponse({status: HttpStatus.CREATED, exampleData: SWAGGER_EXAMPLE_ONE_FUEL_CARD})
+    @HttpCode(HttpStatus.OK)
+    @ApiNotFoundResponse({description: Exception.USER_NOT_FOUND})
+    @Patch(':id/deleteUser')
+    deleteUser(@Param('id') id: string): Promise<CreateFuelCardDto> {
+        return this.fuelCardService.deleteUser(Number(id))
     }
 
     @ApiOperation({summary: 'Delete fuel card by id'})
     @ApiNotFoundResponse({description: Exception.CARD_NOT_FOUND})
     @HttpCode(HttpStatus.NO_CONTENT)
     @Delete(':id')
-    deleteFuelCardById(@Param('id') id: string): void {
-        this.fuelCardService.deleteFuelCardById(Number(id));
+    deleteFuelCardById(@Param('id') id: string): Promise<CreateFuelCardDto>{
+        return this.fuelCardService.deleteFuelCardById(Number(id));
     }
 }

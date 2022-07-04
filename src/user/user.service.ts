@@ -155,7 +155,11 @@ export class UserService {
                 .update({
                     where: {id: userId},
                     data: {
-                        positionId: positionId
+                        position: {
+                            connect: {
+                                id: positionId
+                            }
+                        }
                     },
                     select: {
                         id: true,
@@ -168,7 +172,38 @@ export class UserService {
                         image: true,
                         role: true,
                         car: true,
-                        positionId: true,
+                        position: true,
+                        fuel_card: true
+                    }
+                })
+        } catch (e) {
+            throw new HttpException(e.message, HttpStatus.BAD_REQUEST);
+        }
+
+    }
+
+    async deletePosition(userId: number): Promise<UserType> {
+        try {
+            return await this.prismaService.user
+                .update({
+                    where: {id: userId},
+                    data: {
+                        position: {
+                            disconnect: true
+                        }
+                    },
+                    select: {
+                        id: true,
+                        surename: true,
+                        name: true,
+                        fathersname: true,
+                        phone: true,
+                        email: true,
+                        birthday: true,
+                        image: true,
+                        role: true,
+                        car: true,
+                        position: true,
                         fuel_card: true
                     }
                 })
@@ -188,6 +223,36 @@ export class UserService {
                             connect: {
                                 id: carId
                             }
+                        }
+                    },
+                    select: {
+                        id: true,
+                        surename: true,
+                        name: true,
+                        fathersname: true,
+                        phone: true,
+                        email: true,
+                        birthday: true,
+                        image: true,
+                        role: true,
+                        car: true,
+                        positionId: true,
+                        fuel_card: true
+                    }
+                })
+        } catch (error) {
+            throw new HttpException(error.message, HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    async deleteCar(userId: number): Promise<UserType> {
+        try {
+            return await this.prismaService.user
+                .update({
+                    where: {id: userId},
+                    data: {
+                        car: {
+                            disconnect: true
                         }
                     },
                     select: {

@@ -60,7 +60,7 @@ export class CarController {
     @ApiForbiddenResponse({description: Exception.FORBIDDEN})
     @HttpCode(HttpStatus.NO_CONTENT)
     @Delete(':id')
-    delete(@Param('id') id: string): Promise<void> {
+    delete(@Param('id') id: string): Promise<CreateCarDto> {
         return this.carService.delete(Number(id));
     }
 

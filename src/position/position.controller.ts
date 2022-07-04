@@ -52,7 +52,7 @@ export class PositionController {
     @ApiOperation({summary: 'Detete position by id'})
     @ApiNotFoundResponse({description: Exception.POSITION_NOT_FOUND})
     @Delete(':id')
-    deletPosition(@Param('id') id: string): Promise<void> {
+    deletPosition(@Param('id') id: string): Promise<PositionDto> {
         return this.positionService.delete(Number(id));
     }
 

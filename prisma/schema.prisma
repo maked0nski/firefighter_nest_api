@@ -32,16 +32,16 @@ model User {
 }
 
 model car {
-  id           Int    @id @default(autoincrement())
-  vin          String
+  id           Int     @id @default(autoincrement())
+  vin          String?
   model        String
   fuel         String
   year         String
-  passport_car String
-  oddometr     Int
-  insurance    String
-  userId       Int?   @unique(map: "Car_userId_key")
-  users        User?  @relation("carTousers", fields: [userId], references: [id], map: "Car_userId_fkey")
+  passport_car String?
+  oddometr     Int?
+  insurance    String?
+  userId       Int?    @unique(map: "Car_userId_key")
+  users        User?   @relation("carTousers", fields: [userId], references: [id], map: "Car_userId_fkey")
 }
 
 model client {
@@ -53,7 +53,7 @@ model client {
   service_contract            String?
   contact_person              contact_person[]
   fire_extinguishers          fire_extinguishers[]
-  fire_hydrant                fire_hydrant[]
+  fire_hydrant                fire_hydrant?
   fire_resistant_impregnation fire_resistant_impregnation?
 }
 
@@ -88,10 +88,8 @@ model fire_hydrant {
   reminding  Boolean @default(true)
   quantity   Int
   next_check String
-  firmId     Int?
+  firmId     Int?    @unique(map: "Fire_hydrant_firmId_fkey")
   client     client? @relation(fields: [firmId], references: [id], map: "Fire_hydrant_firmId_fkey")
-
-  @@index([firmId], map: "Fire_hydrant_firmId_fkey")
 }
 
 model fire_resistant_impregnation {
@@ -117,10 +115,11 @@ model fuel_card {
 }
 
 model observation {
-  id       Int       @id @default(autoincrement())
-  number   Int
-  contract String?
-  sim_card sim_card?
+  id         Int       @id @default(autoincrement())
+  number     Int
+  contract   String?
+  sim_card   sim_card? @relation(fields: [sim_cardId], references: [id], map: "ObservationId_sim_card_key")
+  sim_cardId Int?      @unique(map: "ObservationId_sim_card_key")
 }
 
 model position {
@@ -130,12 +129,12 @@ model position {
 }
 
 model sim_card {
-  id            Int          @id @default(autoincrement())
-  number        String       @unique(map: "Sim_card_number_key")
-  operator      String       @default("kyivstar")
-  active        Boolean      @default(true)
-  observationId Int?         @unique(map: "Sim_card_observationId_key")
-  observation   observation? @relation(fields: [observationId], references: [id], map: "Sim_card_observationId_fkey")
+  id          Int          @id @default(autoincrement())
+  number      String       @unique(map: "Sim_card_number_key")
+  operator    String       @default("kyivstar")
+  active      Boolean      @default(true)
+  //  observationId Int?         @unique(map: "Sim_card_observationId_key")
+  observation observation? //@relation(fields: [observationId], references: [id], map: "Sim_card_observationId_fkey")
 }
 
 enum Role {

@@ -25,13 +25,13 @@ CREATE TABLE `users` (
 -- CreateTable
 CREATE TABLE `car` (
     `id` INTEGER NOT NULL AUTO_INCREMENT,
-    `vin` VARCHAR(191) NOT NULL,
+    `vin` VARCHAR(191) NULL,
     `model` VARCHAR(191) NOT NULL,
     `fuel` VARCHAR(191) NOT NULL,
     `year` VARCHAR(191) NOT NULL,
-    `passport_car` VARCHAR(191) NOT NULL,
-    `oddometr` INTEGER NOT NULL,
-    `insurance` VARCHAR(191) NOT NULL,
+    `passport_car` VARCHAR(191) NULL,
+    `oddometr` INTEGER NULL,
+    `insurance` VARCHAR(191) NULL,
     `userId` INTEGER NULL,
 
     UNIQUE INDEX `Car_userId_key`(`userId`),
@@ -88,7 +88,7 @@ CREATE TABLE `fire_hydrant` (
     `next_check` VARCHAR(191) NOT NULL,
     `firmId` INTEGER NULL,
 
-    INDEX `Fire_hydrant_firmId_fkey`(`firmId`),
+    UNIQUE INDEX `Fire_hydrant_firmId_fkey`(`firmId`),
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
@@ -123,7 +123,9 @@ CREATE TABLE `observation` (
     `id` INTEGER NOT NULL AUTO_INCREMENT,
     `number` INTEGER NOT NULL,
     `contract` VARCHAR(191) NULL,
+    `sim_cardId` INTEGER NULL,
 
+    UNIQUE INDEX `ObservationId_sim_card_key`(`sim_cardId`),
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
@@ -141,10 +143,8 @@ CREATE TABLE `sim_card` (
     `number` VARCHAR(191) NOT NULL,
     `operator` VARCHAR(191) NOT NULL DEFAULT 'kyivstar',
     `active` BOOLEAN NOT NULL DEFAULT true,
-    `observationId` INTEGER NULL,
 
     UNIQUE INDEX `Sim_card_number_key`(`number`),
-    UNIQUE INDEX `Sim_card_observationId_key`(`observationId`),
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
@@ -170,4 +170,4 @@ ALTER TABLE `fire_resistant_impregnation` ADD CONSTRAINT `Fire_resistant_impregn
 ALTER TABLE `fuel_card` ADD CONSTRAINT `Fuel_card_userId_fkey` FOREIGN KEY (`userId`) REFERENCES `users`(`id`) ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE `sim_card` ADD CONSTRAINT `Sim_card_observationId_fkey` FOREIGN KEY (`observationId`) REFERENCES `observation`(`id`) ON DELETE SET NULL ON UPDATE CASCADE;
+ALTER TABLE `observation` ADD CONSTRAINT `ObservationId_sim_card_key` FOREIGN KEY (`sim_cardId`) REFERENCES `sim_card`(`id`) ON DELETE SET NULL ON UPDATE CASCADE;
