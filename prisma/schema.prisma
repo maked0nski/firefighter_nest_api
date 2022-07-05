@@ -1,0 +1,144 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id            Int         @id @default(autoincrement())
+  createdAt     DateTime    @default(now()) @db.Timestamp(6)
+  updatedAt     DateTime    @updatedAt
+  surename      String?
+  name          String?
+  fathersname   String?
+  phone         String?     @unique
+  email         String      @unique
+  birthday      String?
+  password      String
+  image         String?     @default("https://www.gravatar.com/avatar/00000000000000000000000000000000?d=mp&f=y")
+  role          Role        @default(USER)
+  refresh_token String?     @db.VarChar(500)
+  positionId    Int?
+  position      position?   @relation("positionTousers", fields: [positionId], references: [id])
+  car           car?        @relation("carTousers")
+  fuel_card     fuel_card[] @relation("fuel_cardTousers")
+
+  @@index([email])
+  @@index([positionId], map: "users_positionId_fkey")
+  @@map("users")
+}
+
+model car {
+  id           Int     @id @default(autoincrement())
+  vin          String?
+  model        String
+  fuel         String
+  year         String
+  passport_car String?
+  oddometr     Int?
+  insurance    String?
+  userId       Int?    @unique(map: "Car_userId_key")
+  users        User?   @relation("carTousers", fields: [userId], references: [id], map: "Car_userId_fkey")
+}
+
+model client {
+  id                          Int                          @id @default(autoincrement())
+  name                        String?
+  city                        String?
+  adress                      String?
+  coordinate                  String?
+  service_contract            String?
+  contact_person              contact_person[]
+  fire_extinguishers          fire_extinguishers[]
+  fire_hydrant                fire_hydrant?
+  fire_resistant_impregnation fire_resistant_impregnation?
+}
+
+model contact_person {
+  id          Int     @id @default(autoincrement())
+  surename    String?
+  name        String?
+  fathersname String?
+  phone       String? @unique(map: "Contact_person_phone_key")
+  position    String?
+  email       String? @unique(map: "Contact_person_email_key")
+  firmId      Int?
+  client      client? @relation(fields: [firmId], references: [id], map: "Contact_person_firmId_fkey")
+
+  @@index([firmId], map: "Contact_person_firmId_fkey")
+}
+
+model fire_extinguishers {
+  id         Int     @id @default(autoincrement())
+  reminding  Boolean @default(true)
+  model      String
+  quantity   Int
+  next_check String
+  firmId     Int?
+  client     client? @relation(fields: [firmId], references: [id], map: "Fire_extinguishers_firmId_fkey")
+
+  @@index([firmId], map: "Fire_extinguishers_firmId_fkey")
+}
+
+model fire_hydrant {
+  id         Int     @id @default(autoincrement())
+  reminding  Boolean @default(true)
+  quantity   Int
+  next_check String
+  firmId     Int?    @unique(map: "Fire_hydrant_firmId_fkey")
+  client     client? @relation(fields: [firmId], references: [id], map: "Fire_hydrant_firmId_fkey")
+}
+
+model fire_resistant_impregnation {
+  id             Int     @id @default(autoincrement())
+  reminding      Boolean @default(true)
+  seepage_liquid String
+  area           Int
+  next_check     String
+  firmId         Int?    @unique(map: "Fire_resistant_impregnation_firmId_key")
+  client         client? @relation(fields: [firmId], references: [id], map: "Fire_resistant_impregnation_firmId_fkey")
+}
+
+model fuel_card {
+  id            Int     @id @default(autoincrement())
+  number        String
+  pin           String
+  active        Boolean @default(true)
+  station_brend String  @default("OKKO")
+  userId        Int?
+  users         User?   @relation("fuel_cardTousers", fields: [userId], references: [id], map: "Fuel_card_userId_fkey")
+
+  @@index([userId], map: "Fuel_card_userId_fkey")
+}
+
+model observation {
+  id         Int       @id @default(autoincrement())
+  number     Int
+  contract   String?
+  sim_card   sim_card? @relation(fields: [sim_cardId], references: [id], map: "ObservationId_sim_card_key")
+  sim_cardId Int?      @unique(map: "ObservationId_sim_card_key")
+}
+
+model position {
+  id       Int    @id @default(autoincrement())
+  position String
+  users    User[] @relation("positionTousers")
+}
+
+model sim_card {
+  id          Int          @id @default(autoincrement())
+  number      String       @unique(map: "Sim_card_number_key")
+  operator    String       @default("kyivstar")
+  active      Boolean      @default(true)
+  //  observationId Int?         @unique(map: "Sim_card_observationId_key")
+  observation observation? //@relation(fields: [observationId], references: [id], map: "Sim_card_observationId_fkey")
+}
+
+enum Role {
+  USER
+  ADMIN
+  ROOT
+}
