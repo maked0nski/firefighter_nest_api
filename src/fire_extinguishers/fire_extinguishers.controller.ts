@@ -12,7 +12,7 @@ import {
 
 
 @ApiTags('Вогнегасники')
-@Controller('fire-extinguishers')
+@Controller('fire_extinguishers')
 @UseGuards(AtGuard)
 export class FireExtinguishersController {
 

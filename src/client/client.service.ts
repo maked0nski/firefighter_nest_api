@@ -44,6 +44,24 @@ export class ClientService {
             })
     }
 
+    getAllDataById(id: number): Promise<CreateClientDto> {
+        return Promise.resolve(this.prismaService.client
+            .findUnique({
+                where: {id},
+                include: {
+                    contact_person: true,
+                    fire_extinguishers: true,
+                    fire_hydrant: true,
+                    fire_resistant_impregnation: true,
+                    observation: {
+                        include: {
+                            sim_card: true,
+                        }
+                    }
+                }
+            }))
+    }
+
     getById(id: number): Promise<CreateClientDto> {
         return Promise
             .resolve(this.prismaService.client

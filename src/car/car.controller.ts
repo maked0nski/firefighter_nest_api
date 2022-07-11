@@ -1,11 +1,11 @@
 import {Body, Controller, Delete, Get, HttpCode, HttpStatus, Param, Patch, Post, UseGuards} from '@nestjs/common';
 import {ApiForbiddenResponse, ApiNotFoundResponse, ApiOperation, ApiTags} from "@nestjs/swagger";
-import {AtGuard} from "../core/guards";
-import {CarService} from "./car.service";
-import {CreateCarDto} from "./dto/create.car.dto";
+
+import {CreateCarDto, UpdateCarDto} from "./dto";
 import {CustomOkResponse} from "../utils";
+import {CarService} from "./car.service";
 import {Exception} from "../exceptions";
-import {UpdateCarDto} from "./dto/update.car.dto";
+import {AtGuard} from "../core/guards";
 import {
     SWAGGER_EXAMPLE_CAR, SWAGGER_EXAMPLE_CARS_LIST,
 } from "../utils/example";

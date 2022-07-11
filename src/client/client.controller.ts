@@ -52,9 +52,19 @@ export class ClientController {
     @CustomOkResponse({status: HttpStatus.OK, exampleData: SWAGGER_CLIENT_EXAMPLE})
     @ApiNotFoundResponse({description: Exception.FIRM_CLIENT_NOT_FOUND})
     @HttpCode(HttpStatus.OK)
-    @Get('id')
+    @Get(':id')
     getById(@Param('id') id: string): Promise<CreateClientDto> {
         return this.clientService.getById(Number(id));
+    }
+
+    @ApiOperation({summary: 'Get client firms by id'})
+    @ApiForbiddenResponse({description: Exception.FORBIDDEN})
+    @CustomOkResponse({status: HttpStatus.OK, exampleData: SWAGGER_CLIENT_EXAMPLE})
+    @ApiNotFoundResponse({description: Exception.FIRM_CLIENT_NOT_FOUND})
+    @HttpCode(HttpStatus.OK)
+    @Get(':id/all')
+    getAllDataById(@Param('id') id: string): Promise<CreateClientDto> {
+        return this.clientService.getAllDataById(Number(id));
     }
 
     @ApiOperation({summary: 'Update client firms by id'})

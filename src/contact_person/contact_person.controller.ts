@@ -11,7 +11,7 @@ import {CreateContactPersonDto, UpdateContactPersonDto} from "./dto";
 
 
 @ApiTags('Контактні особи фірми клієнта')
-@Controller('contact-person')
+@Controller('contact_person')
 @UseGuards(AtGuard)
 export class ContactPersonController {
 
@@ -49,7 +49,7 @@ export class ContactPersonController {
     @ApiForbiddenResponse({description: Exception.FORBIDDEN})
     @CustomOkResponse({status: HttpStatus.OK, exampleData: SWAGGER_CONTACT_PERSON_LIST})
     @HttpCode(HttpStatus.OK)
-    @Get('id')
+    @Get(':id')
     getById(@Param('id') id: string): Promise<CreateContactPersonDto> {
         return this.contactPersonService.getById(Number(id));
     }
@@ -70,6 +70,7 @@ export class ContactPersonController {
     @HttpCode(HttpStatus.CREATED)
     @Patch(':id')
     update(@Param('id') id: string, @Body() dto: UpdateContactPersonDto): Promise<CreateContactPersonDto> {
+        console.log(id)
         return this.contactPersonService.update(Number(id), dto);
     }
 

@@ -12,7 +12,7 @@ import {
 import {CreateFireResistantImpregnationDto,UpdateFireResistantImpregnationDto} from "./dto";
 
 @ApiTags('Просочення конструкцій вогнетривкою речовиною')
-@Controller('fire-resistant-impregnation')
+@Controller('fire_resistant_impregnation')
 @UseGuards(AtGuard)
 export class FireResistantImpregnationController {
     constructor(private fireResistantImpregnationService: FireResistantImpregnationService) {
