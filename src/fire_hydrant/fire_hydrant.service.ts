@@ -15,7 +15,10 @@ export class FireHydrantService {
         return Promise
             .resolve(
                 this.prismaService.fire_hydrant.create({
-                    data: dto
+                    data: {
+                        ...dto,
+                        firmId: dto.firmId
+                    }
                 })
             )
             .catch((error) => {

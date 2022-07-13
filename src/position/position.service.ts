@@ -36,11 +36,10 @@ export class PositionService {
 
 
     getById(id: number): Promise<PositionDto> {
-        return Promise.resolve(this.prismaService.position.findUnique({
+        return Promise.resolve(this.prismaService.position.findUniqueOrThrow({
             where: {
                 id
-            },
-            rejectOnNotFound: true
+            }
         }))
             .catch((error) => {
                 if (error instanceof PrismaClientKnownRequestError && error.code === 'P2025') {

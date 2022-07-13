@@ -8,7 +8,7 @@ import {SWAGGER_EXAMPLE_FIRE_HYDRANT} from "../utils/example";
 import {CreateFireHydrantDto, UpdateFireHydrantDto} from "./dto";
 
 @ApiTags('Пожежні гідранти')
-@Controller('fire-hydrant')
+@Controller('hydrant')
 @UseGuards(AtGuard)
 export class FireHydrantController {
     constructor(private fireHydrantService: FireHydrantService) {

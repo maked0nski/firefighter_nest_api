@@ -65,21 +65,35 @@ export class ContactPersonService {
             });
     }
 
-    update(id: number, dto: UpdateContactPersonDto): Promise<CreateContactPersonDto> {
+    update(id: number, dto: Partial<UpdateContactPersonDto>): Promise<CreateContactPersonDto> {
         return Promise
             .resolve(this.prismaService.contact_person
                 .update({
                     where: {id},
+                    data: dto
+                }))
+            .catch((error) => {
+                if (error instanceof PrismaClientKnownRequestError) {
+                    if (error.code === 'P2002') {
+                        throw new ForbiddenException(Exception.FORBIDDEN);
+                    }
+                    if (error.code === 'P2025') {
+                        throw new NotFoundException(Exception.CONTACT_PERSON_NOT_FOUND)
+                    }
+                }
+                throw new HttpException(error.message, HttpStatus.BAD_REQUEST);
+            });
+    }
+
+    addFirm(id: number, dto: Partial<UpdateContactPersonDto>): Promise<CreateContactPersonDto> {
+        return Promise
+            .resolve(this.prismaService.contact_person
+                .update({
+                    where:{id},
                     data: {
-                        surename: dto.surename,
-                        name: dto.name,
-                        fathersname: dto.fathersname,
-                        phone: dto.phone,
-                        position: dto.position,
-                        email: dto.email,
                         client: {
                             connect: {
-                                id: dto.firmId
+                                id: dto?.firmId
                             }
                         }
                     }
@@ -95,7 +109,10 @@ export class ContactPersonService {
                 }
                 throw new HttpException(error.message, HttpStatus.BAD_REQUEST);
             });
+
     }
+
+
 
     delete(id: number): Promise<CreateContactPersonDto> {
         return Promise

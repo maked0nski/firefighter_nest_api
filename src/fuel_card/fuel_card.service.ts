@@ -34,9 +34,8 @@ export class FuelCardService {
     getFuelCardById(id: number): Promise<CreateFuelCardDto> {
         return Promise
             .resolve(this.prismaService.fuel_card
-                .findUnique({
-                    where: {id},
-                    rejectOnNotFound: true
+                .findUniqueOrThrow({
+                    where: {id}
                 }))
             .catch((error) => {
                 if (error instanceof PrismaClientKnownRequestError) {

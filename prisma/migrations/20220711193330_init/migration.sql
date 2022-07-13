@@ -124,8 +124,10 @@ CREATE TABLE `observation` (
     `number` INTEGER NOT NULL,
     `contract` VARCHAR(191) NULL,
     `sim_cardId` INTEGER NULL,
+    `firmId` INTEGER NULL,
 
     UNIQUE INDEX `ObservationId_sim_card_key`(`sim_cardId`),
+    UNIQUE INDEX `Observation_firmId_key`(`firmId`),
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
@@ -168,6 +170,9 @@ ALTER TABLE `fire_resistant_impregnation` ADD CONSTRAINT `Fire_resistant_impregn
 
 -- AddForeignKey
 ALTER TABLE `fuel_card` ADD CONSTRAINT `Fuel_card_userId_fkey` FOREIGN KEY (`userId`) REFERENCES `users`(`id`) ON DELETE SET NULL ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE `observation` ADD CONSTRAINT `Observation_firmId_key` FOREIGN KEY (`firmId`) REFERENCES `client`(`id`) ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE `observation` ADD CONSTRAINT `ObservationId_sim_card_key` FOREIGN KEY (`sim_cardId`) REFERENCES `sim_card`(`id`) ON DELETE SET NULL ON UPDATE CASCADE;

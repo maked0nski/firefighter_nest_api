@@ -55,6 +55,7 @@ model client {
   fire_extinguishers          fire_extinguishers[]
   fire_hydrant                fire_hydrant?
   fire_resistant_impregnation fire_resistant_impregnation?
+  observation                 observation?
 }
 
 model contact_person {
@@ -120,6 +121,9 @@ model observation {
   contract   String?
   sim_card   sim_card? @relation(fields: [sim_cardId], references: [id], map: "ObservationId_sim_card_key")
   sim_cardId Int?      @unique(map: "ObservationId_sim_card_key")
+  firmId     Int?      @unique(map: "Observation_firmId_key")
+  client     client?   @relation(fields: [firmId], references: [id], map: "Observation_firmId_key")
+
 }
 
 model position {

@@ -82,7 +82,7 @@ export class UserService {
     }
 
     async getById(id: number): Promise<UserType> {
-        return await this.prismaService.user.findUnique({
+        return await this.prismaService.user.findUniqueOrThrow({
             where: {id: id},
             select: {
                 id: true,
@@ -97,8 +97,7 @@ export class UserService {
                 car: true,
                 positionId: true,
                 fuel_card: true
-            },
-            rejectOnNotFound: true
+            }
         })
             .catch((error) => {
                 throw new HttpException(error.message, HttpStatus.NOT_FOUND);
