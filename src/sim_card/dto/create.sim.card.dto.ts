@@ -4,9 +4,9 @@ import {OperatorEnum} from "../enum";
 
 export class CreateSimCardDto {
 
-    @ApiProperty({example: '(050) 11 22 333', description: 'Номер тенефона сім карти 15 символів'})
+    @ApiProperty({example: '0501122333', description: 'Номер тенефона сім карти 15 символів'})
     @IsString()
-    @Length(15, 15)
+    @Length(10, 10)
     public number: string;
 
     @ApiProperty({

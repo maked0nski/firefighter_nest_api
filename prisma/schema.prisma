@@ -17,8 +17,9 @@ model User {
   phone         String?     @unique
   email         String      @unique
   birthday      String?
+  timeLeft       Int?    @default(0)
   password      String
-  image         String?     @default("https://www.gravatar.com/avatar/00000000000000000000000000000000?d=mp&f=y")
+  image         String?     @default("defaulAvatar.png")
   role          Role        @default(USER)
   refresh_token String?     @db.VarChar(500)
   positionId    Int?
@@ -40,6 +41,7 @@ model car {
   passport_car String?
   oddometr     Int?
   insurance    String?
+  timeLeft       Int?    @default(0)
   userId       Int?    @unique(map: "Car_userId_key")
   users        User?   @relation("carTousers", fields: [userId], references: [id], map: "Car_userId_fkey")
 }
@@ -78,6 +80,7 @@ model fire_extinguishers {
   model      String
   quantity   Int
   next_check String
+    timeLeft       Int?    @default(0)
   firmId     Int?
   client     client? @relation(fields: [firmId], references: [id], map: "Fire_extinguishers_firmId_fkey")
 
@@ -89,6 +92,7 @@ model fire_hydrant {
   reminding  Boolean @default(true)
   quantity   Int
   next_check String
+    timeLeft       Int?    @default(0)
   firmId     Int?    @unique(map: "Fire_hydrant_firmId_fkey")
   client     client? @relation(fields: [firmId], references: [id], map: "Fire_hydrant_firmId_fkey")
 }
@@ -99,6 +103,7 @@ model fire_resistant_impregnation {
   seepage_liquid String
   area           Int
   next_check     String
+    timeLeft       Int?    @default(0)
   firmId         Int?    @unique(map: "Fire_resistant_impregnation_firmId_key")
   client         client? @relation(fields: [firmId], references: [id], map: "Fire_resistant_impregnation_firmId_fkey")
 }

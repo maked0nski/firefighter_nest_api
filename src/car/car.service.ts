@@ -1,9 +1,9 @@
 import {ForbiddenException, HttpException, HttpStatus, Injectable, NotFoundException} from '@nestjs/common';
-import {CreateCarDto} from "./dto/create.car.dto";
-import {PrismaService} from "../core/prisma.service";
-import {Exception} from "../exceptions";
 import {PrismaClientKnownRequestError} from "@prisma/client/runtime";
-import {UpdateCarDto} from "./dto/update.car.dto";
+import {PrismaService} from "../core/prisma.service";
+import {CreateCarDto, UpdateCarDto} from "./dto";
+import {Exception} from "../exceptions";
+import {remind} from "../utils";
 
 @Injectable()
 export class CarService {
@@ -15,7 +15,10 @@ export class CarService {
         return Promise
             .resolve(this.prismaService.car
                 .create({
-                    data: carDto
+                    data: {
+                        ...carDto,
+                        timeLeft: remind(carDto.insurance)
+                    }
                 }))
             .catch((error) => {
                 if (error instanceof PrismaClientKnownRequestError) {

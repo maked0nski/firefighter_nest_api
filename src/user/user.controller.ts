@@ -6,15 +6,17 @@ import {
     HttpCode,
     HttpStatus,
     Param,
-    Patch,
-    UseGuards
+    Patch, Res, UploadedFile,
+    UseGuards, UseInterceptors
 } from '@nestjs/common';
 import {ApiForbiddenResponse, ApiNotFoundResponse, ApiOperation, ApiTags} from '@nestjs/swagger';
+import {FileInterceptor} from "@nestjs/platform-express";
+import {diskStorage} from "multer";
 
 import {AtGuard} from "../core/guards";
 import {UserService} from "./user.service";
 import {UpdateUserDto} from "./dto";
-import {CustomOkResponse} from "../utils";
+import {CustomOkResponse, editFileName, imageFileFilter} from "../utils";
 import {
     SWAGGER_EXAMPLE_USER,
     SWAGGER_EXAMPLE_USER_BY_ID,
@@ -25,6 +27,8 @@ import {
 } from "../utils/example";
 import {Exception} from "../exceptions";
 import {UserType} from "./type";
+import {Public} from "../core/decorators";
+// import ImageKit from "imagekit";
 
 
 @ApiTags('Users')
@@ -32,8 +36,18 @@ import {UserType} from "./type";
 @UseGuards(AtGuard)
 export class UserController {
 
-    constructor(private readonly userService: UserService) {
-    }
+    ImageKit = require("imagekit");
+    imagekit= new this.ImageKit({
+        publicKey: "public_nfGb6hfIIfP1QD7wvUQZYNIDQOE=",
+        privateKey: "private_NGWLTaOgidwvWDM0CICw0g72WxA=",
+        urlEndpoint: "https://ik.imagekit.io/maked0nski"
+    })
+
+
+    constructor(
+        private readonly userService: UserService,
+    ) {}
+
 
     @ApiOperation({summary: 'Get all users'})
     @CustomOkResponse({status: HttpStatus.OK, exampleData: SWAGGER_EXAMPLE_USERS_LIST})
@@ -77,15 +91,72 @@ export class UserController {
     }
 
 
+    // @Get(':id/image')
+    // watchFile(@Param('id') id: string, @Res() res) {
+    //     console.log(id)
+    //     let image: string
+    //     this.userService.getById(Number(id)).then(value => {
+    //         console.log(image)
+    //         image = value.image
+    //         console.log(image)
+    //     });
+    //     console.log(image)
+    //     return res.sendFile(image, {root: './files/image/'});
+    // }
+
+
     @ApiOperation({summary: 'Update user'})
     @CustomOkResponse({status: HttpStatus.CREATED, exampleData: SWAGGER_EXAMPLE_USER})
     @ApiForbiddenResponse({description: Exception.FORBIDDEN})
     @ApiNotFoundResponse({description: Exception.USER_NOT_FOUND})
     @HttpCode(HttpStatus.CREATED)
+    @UseInterceptors(
+        FileInterceptor('image', {
+            storage: diskStorage({
+                destination: './files/image',
+                filename: editFileName,
+            }),
+            fileFilter: imageFileFilter
+        })
+    )
     @Patch(':id')
-    update(@Param('id') id: string, @Body() userUpdateDto: UpdateUserDto): Promise<UserType> {
-        return this.userService.updateUser(Number(id), userUpdateDto);
+    update(
+        @Param('id') id: string,
+        @Body() userUpdateDto: UpdateUserDto,
+        @UploadedFile() image: Express.Multer.File,
+    ): Promise<UserType> {
+        console.log('update')
+        try {
+            if (image) {
+                // console.log(image)
+                // const response = {
+                //     originalname: image.originalname,
+                //     filename: image.filename,
+                // };
+                // userUpdateDto.image = `./files/image/${image.filename}`;
+                userUpdateDto.image = `${image.filename}`;
+                console.log(userUpdateDto)
+                // this.imagekit.upload({
+                //     file: image.buffer,
+                //     fileName: image.filename,
+                // })
+            }
+            return this.userService.updateUser(Number(id), userUpdateDto);
+        } catch (e) {
+            console.log(e)
+        }
+
     }
+
+
+
+    @Public()
+    @Get('/avatar/:image')
+    getAvatar(@Param('image') image, @Res() res) {
+        // console.log(image)
+        return res.sendFile(image, {root: './files/image'});
+    }
+
 
 
     @ApiOperation({summary: 'Add user position'})
